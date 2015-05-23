@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Monitor", "Selkie.Services.Monitor\Selkie.Services.Monitor.csproj", "{F8DEA384-9393-4B0A-BD7A-0E61803E97AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Monitor.Console", "Selkie.Services.Monitor.Console\Selkie.Services.Monitor.Console.csproj", "{518A7D59-4F46-4E1B-A2A4-C0231C40E572}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{39A9A301-1E5E-468A-9BEF-640220CDD0C9}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Monitor.Common", "Selkie.Services.Monitor.Common\Selkie.Services.Monitor.Common.csproj", "{2004EEA0-7BEE-4196-9354-3404FEA91410}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Monitor.SpecFlow", "Selkie.Services.Monitor.SpecFlow\Selkie.Services.Monitor.SpecFlow.csproj", "{24728FD9-4FDE-4D08-A6FA-FD679BDCE442}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Monitor.Tests", "Selkie.Services.Monitor.Tests\Selkie.Services.Monitor.Tests.csproj", "{3DD588AC-FB48-4199-BBAD-713894BBDDAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Monitor.Common.Tests", "Selkie.Services.Monitor.Common.Tests\Selkie.Services.Monitor.Common.Tests.csproj", "{032E0AA5-DD30-4788-9F0E-91B624337DC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Aco.Console", "Selkie.Services.Aco.Console\Selkie.Services.Aco.Console.csproj", "{78F1CEA7-2C8B-4532-A323-8526B538999A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Lines.Console", "Selkie.Services.Lines.Console\Selkie.Services.Lines.Console.csproj", "{9DE00DD8-006C-4CC1-8E51-28FA169D7201}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selkie.Services.Racetracks.Console", "Selkie.Services.Racetracks.Console\Selkie.Services.Racetracks.Console.csproj", "{7277AE65-6E3B-4A9F-A15F-55AB28565680}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F8DEA384-9393-4B0A-BD7A-0E61803E97AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8DEA384-9393-4B0A-BD7A-0E61803E97AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8DEA384-9393-4B0A-BD7A-0E61803E97AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8DEA384-9393-4B0A-BD7A-0E61803E97AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{518A7D59-4F46-4E1B-A2A4-C0231C40E572}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{518A7D59-4F46-4E1B-A2A4-C0231C40E572}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{518A7D59-4F46-4E1B-A2A4-C0231C40E572}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{518A7D59-4F46-4E1B-A2A4-C0231C40E572}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2004EEA0-7BEE-4196-9354-3404FEA91410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2004EEA0-7BEE-4196-9354-3404FEA91410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2004EEA0-7BEE-4196-9354-3404FEA91410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2004EEA0-7BEE-4196-9354-3404FEA91410}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24728FD9-4FDE-4D08-A6FA-FD679BDCE442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24728FD9-4FDE-4D08-A6FA-FD679BDCE442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24728FD9-4FDE-4D08-A6FA-FD679BDCE442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24728FD9-4FDE-4D08-A6FA-FD679BDCE442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DD588AC-FB48-4199-BBAD-713894BBDDAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DD588AC-FB48-4199-BBAD-713894BBDDAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DD588AC-FB48-4199-BBAD-713894BBDDAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DD588AC-FB48-4199-BBAD-713894BBDDAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{032E0AA5-DD30-4788-9F0E-91B624337DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{032E0AA5-DD30-4788-9F0E-91B624337DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{032E0AA5-DD30-4788-9F0E-91B624337DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{032E0AA5-DD30-4788-9F0E-91B624337DC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78F1CEA7-2C8B-4532-A323-8526B538999A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78F1CEA7-2C8B-4532-A323-8526B538999A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78F1CEA7-2C8B-4532-A323-8526B538999A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78F1CEA7-2C8B-4532-A323-8526B538999A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DE00DD8-006C-4CC1-8E51-28FA169D7201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DE00DD8-006C-4CC1-8E51-28FA169D7201}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DE00DD8-006C-4CC1-8E51-28FA169D7201}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DE00DD8-006C-4CC1-8E51-28FA169D7201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7277AE65-6E3B-4A9F-A15F-55AB28565680}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7277AE65-6E3B-4A9F-A15F-55AB28565680}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7277AE65-6E3B-4A9F-A15F-55AB28565680}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7277AE65-6E3B-4A9F-A15F-55AB28565680}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
