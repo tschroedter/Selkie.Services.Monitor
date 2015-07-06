@@ -3,7 +3,7 @@ using Castle.Core.Logging;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
-using Selkie.Services.Common;
+using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Configuration;
 using Selkie.XUnit.Extensions;
 using Xunit.Extensions;
