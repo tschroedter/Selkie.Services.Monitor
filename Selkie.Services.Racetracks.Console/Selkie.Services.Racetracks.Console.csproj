@@ -92,24 +92,24 @@
       <HintPath>..\packages\Selkie.Common.0.6.166.0\lib\net45\Selkie.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.EasyNetQ, Version=0.6.144.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.EasyNetQ.0.6.144.0\lib\net45\Selkie.EasyNetQ.dll</HintPath>
+    <Reference Include="Selkie.EasyNetQ, Version=0.6.148.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.EasyNetQ.0.6.148.0\lib\net45\Selkie.EasyNetQ.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.Geometry, Version=0.6.84.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.Geometry.0.6.84.0\lib\net45\Selkie.Geometry.dll</HintPath>
+    <Reference Include="Selkie.Geometry, Version=0.6.86.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.Geometry.0.6.86.0\lib\net45\Selkie.Geometry.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.Racetrack, Version=0.6.76.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.Racetrack.0.6.76.0\lib\net45\Selkie.Racetrack.dll</HintPath>
+    <Reference Include="Selkie.Racetrack, Version=0.6.80.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.Racetrack.0.6.80.0\lib\net45\Selkie.Racetrack.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.Services.Common, Version=0.6.108.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.Services.Common.0.6.108.0\lib\net45\Selkie.Services.Common.dll</HintPath>
+    <Reference Include="Selkie.Services.Common, Version=0.6.111.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.Services.Common.0.6.111.0\lib\net45\Selkie.Services.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.Services.Racetracks, Version=0.6.98.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.Services.Racetracks.0.6.98.0\lib\net45\Selkie.Services.Racetracks.dll</HintPath>
+    <Reference Include="Selkie.Services.Racetracks, Version=0.6.101.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.Services.Racetracks.0.6.101.0\lib\net45\Selkie.Services.Racetracks.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Selkie.Services.Racetracks.Common, Version=0.6.51.0, Culture=neutral, processorArchitecture=MSIL">
