@@ -4,6 +4,7 @@ using EasyNetQ;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
+using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
 using Selkie.XUnit.Extensions;
 using Xunit.Extensions;
@@ -14,6 +15,16 @@ namespace Selkie.Services.Monitor.Tests.XUnit
     //ncrunch: no coverage start
     public sealed class ServiceTests
     {
+        [Theory]
+        [AutoNSubstituteData]
+        public void InitializeCallsCheckOrConfigureRabbitMqTest([NotNull] [Frozen] ISelkieManagementClient client,
+                                                                [NotNull] Service service)
+        {
+            service.Initialize();
+
+            client.Received().CheckOrConfigureRabbitMq();
+        }
+
         [Theory]
         [AutoNSubstituteData]
         public void StopCallsLoggerTest([NotNull] [Frozen] ILogger logger,

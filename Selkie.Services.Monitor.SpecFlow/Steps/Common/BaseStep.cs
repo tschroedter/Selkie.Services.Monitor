@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using EasyNetQ;
 using JetBrains.Annotations;
 using TechTalk.SpecFlow;
@@ -9,8 +8,8 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
     [Binding]
     public abstract class BaseStep
     {
-        private static readonly TimeSpan SleepTime = TimeSpan.FromSeconds(2.0);
         private readonly IBus m_Bus;
+        private readonly StepHelper m_Helper = new StepHelper();
 
         protected BaseStep()
         {
@@ -28,17 +27,8 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
         public void SleepWaitAndDo([NotNull] Func <bool> breakIfTrue,
                                    [NotNull] Action doSomething)
         {
-            for ( var i = 0 ; i < 10 ; i++ )
-            {
-                Thread.Sleep(SleepTime);
-
-                if ( breakIfTrue() )
-                {
-                    break;
-                }
-
-                doSomething();
-            }
+            m_Helper.SleepWaitAndDo(breakIfTrue,
+                                    doSomething);
         }
 
         public void DoNothing()

@@ -126,5 +126,60 @@ namespace Selkie.Services.Monitor.Tests.XUnit
             // assert
             logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Stopped")));
         }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void RestartGivenServiceCallsLoggerForUnableToRestartTest([NotNull] ISelkieProcess process,
+                                                                         [NotNull] ServiceElement serviceElement,
+                                                                         [NotNull] ILogger logger)
+        {
+            // assemble
+            process.IsUnknown.Returns(true);
+            serviceElement.ServiceName = "Service";
+
+            var starter = Substitute.For <IServiceStarter>();
+            starter.Start(serviceElement).Returns(process);
+            RestartServiceMonitor sut = CreateSut(logger,
+                                                  starter);
+
+            // act
+            sut.RestartGivenService(serviceElement);
+
+            // assert
+            logger.Received().Error(Arg.Is <string>(x => x.EndsWith("unable to restart service 'Service'!")));
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void RestartGivenServiceCallsLoggerForRestartedTest([NotNull] ISelkieProcess process,
+                                                                   [NotNull] ServiceElement serviceElement,
+                                                                   [NotNull] ILogger logger)
+        {
+            // assemble
+            process.IsUnknown.Returns(false);
+            serviceElement.ServiceName = "Service";
+
+            var starter = Substitute.For <IServiceStarter>();
+            starter.Start(serviceElement).Returns(process);
+            RestartServiceMonitor sut = CreateSut(logger,
+                                                  starter);
+
+            // act
+            sut.RestartGivenService(serviceElement);
+
+            // assert
+            logger.Received().Info(Arg.Is <string>(x => x.EndsWith("'Service' restarted!")));
+        }
+
+        private RestartServiceMonitor CreateSut(ILogger logger,
+                                                IServiceStarter starter)
+        {
+            var sut = new RestartServiceMonitor(logger,
+                                                Substitute.For <IBus>(),
+                                                Substitute.For <IServicesConfigurationRepository>(),
+                                                starter);
+
+            return sut;
+        }
     }
 }

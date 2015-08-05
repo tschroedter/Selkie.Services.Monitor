@@ -48,7 +48,7 @@ namespace Selkie.Services.Monitor
 
         protected override void ServiceStop()
         {
-            m_Stopper.StopAllServices(); // todo maybe all this stopping is not required??
+            m_Stopper.StopAllServices();
 
             Bus.Publish(new ServiceStoppedResponseMessage
                         {
@@ -60,7 +60,9 @@ namespace Selkie.Services.Monitor
 
         protected override void ServiceInitialize()
         {
-            Logger.Debug("...Service Initialized...");
+            Logger.Debug("Service Initialized...");
+
+            ManagementClient.CheckOrConfigureRabbitMq(); // Todo: Not perfect to call CheckOrConfigureRabbitMq here because the services are already started!
         }
     }
 }

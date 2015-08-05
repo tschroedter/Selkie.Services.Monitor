@@ -15,8 +15,6 @@ namespace Selkie.Services.Monitor.Console
                                       Service.ServiceName);
 
             Environment.Exit(0);
-
-            // todo add specflow tests and message providing status
         }
     }
 }

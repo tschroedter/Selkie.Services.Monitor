@@ -11,7 +11,7 @@ namespace Selkie.Services.Monitor.Configuration
           IServicesConfigurationSection
     {
         [ConfigurationProperty("", IsRequired = true, IsDefaultCollection = true)]
-        public ServicesCollection Instances
+        public IServicesCollection Instances
         {
             get
             {
@@ -28,7 +28,7 @@ namespace Selkie.Services.Monitor.Configuration
     {
         [NotNull]
         [ConfigurationProperty("", IsRequired = true, IsDefaultCollection = true)]
-        ServicesCollection Instances { get; set; }
+        IServicesCollection Instances { get; set; }
     }
 
     [ExcludeFromCodeCoverage]
