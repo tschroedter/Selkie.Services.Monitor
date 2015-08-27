@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Castle.Core;
-using Castle.Core.Logging;
 using JetBrains.Annotations;
 using Selkie.Windsor;
 using Selkie.Windsor.Extensions;
@@ -12,11 +11,11 @@ namespace Selkie.Services.Monitor.Configuration
         : IServicesStarter,
           IStartable
     {
-        private readonly ILogger m_Logger;
+        private readonly ISelkieLogger m_Logger;
         private readonly IServicesConfigurationRepository m_Repository;
         private readonly IServiceStarter m_Starter;
 
-        public ServicesStarter([NotNull] ILogger logger,
+        public ServicesStarter([NotNull] ISelkieLogger logger,
                                [NotNull] IServicesConfigurationRepository repository,
                                [NotNull] IServiceStarter starter)
         {

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
@@ -11,7 +10,7 @@ namespace Selkie.Services.Monitor.Configuration
           IServicesConfigurationSection
     {
         [ConfigurationProperty("", IsRequired = true, IsDefaultCollection = true)]
-        public IServicesCollection Instances
+        public ServicesCollection Instances
         {
             get
             {
@@ -28,13 +27,12 @@ namespace Selkie.Services.Monitor.Configuration
     {
         [NotNull]
         [ConfigurationProperty("", IsRequired = true, IsDefaultCollection = true)]
-        IServicesCollection Instances { get; set; }
+        ServicesCollection Instances { get; set; }
     }
 
     [ExcludeFromCodeCoverage]
     public class ServicesCollection
-        : ConfigurationElementCollection,
-          IServicesCollection
+        : ConfigurationElementCollection
     {
         protected override ConfigurationElement CreateNewElement()
         {
@@ -46,12 +44,6 @@ namespace Selkie.Services.Monitor.Configuration
             //set to whatever Element Property you want to use for a key
             return ( ( ServiceElement ) element ).ServiceName;
         }
-    }
-
-    public interface IServicesCollection
-    {
-        [NotNull]
-        IEnumerator GetEnumerator();
     }
 
     [ExcludeFromCodeCoverage]

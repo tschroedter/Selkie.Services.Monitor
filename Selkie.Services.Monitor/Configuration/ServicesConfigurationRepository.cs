@@ -45,7 +45,7 @@ namespace Selkie.Services.Monitor.Configuration
                 return services;
             }
 
-            IServicesCollection test = config.Instances;
+            ServicesCollection test = config.Instances;
             foreach ( object instance in test )
             {
                 var element = instance as ServiceElement;

@@ -1,13 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
 using Selkie.Common;
+using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Common.Messages;
 using Selkie.Services.Monitor.Configuration;
+using Selkie.Windsor;
 using Selkie.XUnit.Extensions;
 using Xunit;
 using Xunit.Extensions;
@@ -91,7 +91,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
         public void UpdateSendsRestartMessageForEachStoppedServiceTest(
             [NotNull] [Frozen] IServicesConfigurationRepository repository,
             [NotNull] [Frozen] IRunningServices runningServices,
-            [NotNull] [Frozen] IBus bus,
+            [NotNull] [Frozen] ISelkieBus bus,
             [NotNull] ServicesStatus servicesStatus,
             [NotNull] ServiceElement one,
             [NotNull] ServiceElement two)
@@ -114,7 +114,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                          [NotNull] ServicesStatus servicesStatus)
         {
             // assemble
@@ -127,7 +127,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                         [NotNull] ServicesStatus servicesStatus)
         {
             // assemble

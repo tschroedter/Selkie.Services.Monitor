@@ -1,8 +1,7 @@
 ﻿using Castle.Core;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using Selkie.Common;
+using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
 using Selkie.Windsor;
 using Selkie.Windsor.Extensions;
@@ -16,14 +15,14 @@ namespace Selkie.Services.Monitor
     {
         internal const int TwoSeconds = 2000;
         internal const int FiveSeconds = 5000;
-        private readonly IBus m_Bus;
-        private readonly ILogger m_Logger;
+        private readonly ISelkieBus m_Bus;
+        private readonly ISelkieLogger m_Logger;
         private readonly INotRunningServices m_NotRunningServices;
         private readonly IRunningServices m_RunningServices;
         private readonly ITimer m_Timer;
         // ReSharper disable once TooManyDependencies
-        public ServicesMonitor([NotNull] IBus bus,
-                               [NotNull] ILogger logger,
+        public ServicesMonitor([NotNull] ISelkieBus bus,
+                               [NotNull] ISelkieLogger logger,
                                [NotNull] IRunningServices runningServices,
                                [NotNull] INotRunningServices notRunningServices,
                                [NotNull] ITimer timer)

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
+using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
 using Selkie.Services.Monitor.Configuration;
 using Selkie.Windsor;
@@ -12,12 +11,12 @@ namespace Selkie.Services.Monitor
     [ProjectComponent(Lifestyle.Singleton)]
     public class ServicesStopper : IServicesStopper
     {
-        private readonly IBus m_Bus;
-        private readonly ILogger m_Logger;
+        private readonly ISelkieBus m_Bus;
+        private readonly ISelkieLogger m_Logger;
         private readonly IServicesConfigurationRepository m_Repository;
 
-        public ServicesStopper([NotNull] ILogger logger,
-                               [NotNull] IBus bus,
+        public ServicesStopper([NotNull] ISelkieLogger logger,
+                               [NotNull] ISelkieBus bus,
                                [NotNull] IServicesConfigurationRepository repository)
         {
             m_Logger = logger;

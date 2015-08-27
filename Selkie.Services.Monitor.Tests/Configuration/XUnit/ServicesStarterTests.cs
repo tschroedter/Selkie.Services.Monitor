@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Castle.Core.Logging;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
 using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Configuration;
+using Selkie.Windsor;
 using Selkie.XUnit.Extensions;
 using Xunit.Extensions;
 
@@ -31,7 +31,7 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartStartsProcessesTest([NotNull] [Frozen] ILogger logger,
+        public void StartStartsProcessesTest([NotNull] [Frozen] ISelkieLogger logger,
                                              [NotNull] [Frozen] IServicesConfigurationRepository repository,
                                              [NotNull] [Frozen] IServiceStarter serviceStarter,
                                              [NotNull] ServicesStarter servicesStarter,
@@ -55,7 +55,7 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartLogStartTest([NotNull] [Frozen] ILogger logger,
+        public void StartLogStartTest([NotNull] [Frozen] ISelkieLogger logger,
                                       [NotNull] [Frozen] IServicesConfigurationRepository repository,
                                       [NotNull] ServiceElement serviceOne,
                                       [NotNull] ISelkieProcess selkieProcess)
@@ -86,7 +86,7 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartLogSuccesfullStartTest([NotNull] [Frozen] ILogger logger,
+        public void StartLogSuccesfullStartTest([NotNull] [Frozen] ISelkieLogger logger,
                                                 [NotNull] [Frozen] IServicesConfigurationRepository repository,
                                                 [NotNull] ServiceElement serviceOne,
                                                 [NotNull] ISelkieProcess selkieProcess)
@@ -117,7 +117,7 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartLogUnsuccesfullStartTest([NotNull] [Frozen] ILogger logger,
+        public void StartLogUnsuccesfullStartTest([NotNull] [Frozen] ISelkieLogger logger,
                                                   [NotNull] [Frozen] ISelkieManagementClient client,
                                                   [NotNull] [Frozen] IServicesConfigurationRepository repository,
                                                   [NotNull] ServiceElement serviceOne,
@@ -147,7 +147,7 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                          [NotNull] ServicesStarter servicesStarter)
         {
             // assemble
@@ -160,7 +160,7 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                         [NotNull] ServicesStarter servicesStarter)
         {
             // assemble

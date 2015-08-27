@@ -1,9 +1,7 @@
 using System.Linq;
 using Castle.Core;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
-using Selkie.EasyNetQ.Extensions;
+using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Common.Messages;
 using Selkie.Windsor;
 using Selkie.Windsor.Extensions;
@@ -15,13 +13,13 @@ namespace Selkie.Services.Monitor
         : IStatusRequestMonitor,
           IStartable
     {
-        private readonly IBus m_Bus;
-        private readonly ILogger m_Logger;
+        private readonly ISelkieBus m_Bus;
+        private readonly ISelkieLogger m_Logger;
         private readonly INotRunningServices m_NotRunningServices;
         private readonly IRunningServices m_RunningServices;
 
-        public StatusRequestMonitor([NotNull] IBus bus,
-                                    [NotNull] ILogger logger,
+        public StatusRequestMonitor([NotNull] ISelkieBus bus,
+                                    [NotNull] ISelkieLogger logger,
                                     [NotNull] IRunningServices runningServices,
                                     [NotNull] INotRunningServices notRunningServices)
         {
@@ -30,9 +28,8 @@ namespace Selkie.Services.Monitor
             m_RunningServices = runningServices;
             m_NotRunningServices = notRunningServices;
 
-            m_Bus.SubscribeHandlerAsync <StatusRequestMessage>(logger,
-                                                               GetType().FullName,
-                                                               StatusRequestHandler);
+            m_Bus.SubscribeAsync <StatusRequestMessage>(GetType().FullName,
+                                                        StatusRequestHandler);
         }
 
         public void Start()

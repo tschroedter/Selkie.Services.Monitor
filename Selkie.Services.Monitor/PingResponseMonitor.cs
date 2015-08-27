@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Castle.Core;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
-using Selkie.EasyNetQ.Extensions;
+using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
 using Selkie.Windsor;
 using Selkie.Windsor.Extensions;
@@ -18,20 +16,19 @@ namespace Selkie.Services.Monitor
     {
         internal readonly string ServiceMonitorName;
         internal readonly Dictionary <string, PingInformation> Services = new Dictionary <string, PingInformation>();
-        private readonly ILogger m_Logger;
+        private readonly ISelkieLogger m_Logger;
         private readonly IRunningServices m_RunningServices;
 
-        public PingResponseMonitor([NotNull] IBus bus,
-                                   [NotNull] ILogger logger,
+        public PingResponseMonitor([NotNull] ISelkieBus bus,
+                                   [NotNull] ISelkieLogger logger,
                                    [NotNull] IRunningServices runningServices)
         {
             m_Logger = logger;
             m_RunningServices = runningServices;
             ServiceMonitorName = Service.ServiceName;
 
-            bus.SubscribeHandlerAsync <PingResponseMessage>(logger,
-                                                            GetType().FullName,
-                                                            PingResponseHandler);
+            bus.SubscribeAsync <PingResponseMessage>(GetType().FullName,
+                                                     PingResponseHandler);
         }
 
         public void Start()

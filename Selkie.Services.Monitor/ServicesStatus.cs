@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Castle.Core;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using Selkie.Common;
+using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Common.Messages;
 using Selkie.Services.Monitor.Configuration;
 using Selkie.Windsor;
@@ -19,15 +18,15 @@ namespace Selkie.Services.Monitor
     {
         internal const int FourSeconds = 4000;
         internal const int TenSeconds = 10000;
-        private readonly IBus m_Bus;
-        private readonly ILogger m_Logger;
+        private readonly ISelkieBus m_Bus;
+        private readonly ISelkieLogger m_Logger;
         private readonly IServicesConfigurationRepository m_Repository;
         private readonly IRunningServices m_RunningServices;
         private readonly ITimer m_Timer;
         private IEnumerable <ServiceElement> m_NotRunningServices = new ServiceElement[0];
 
-        public ServicesStatus([NotNull] ILogger logger,
-                              [NotNull] IBus bus,
+        public ServicesStatus([NotNull] ISelkieLogger logger,
+                              [NotNull] ISelkieBus bus,
                               [NotNull] IServicesConfigurationRepository repository,
                               [NotNull] IRunningServices runningServices,
                               [NotNull] ITimer timer)

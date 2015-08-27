@@ -35,7 +35,7 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
             IEnumerable <ServiceElement> actual = sut.GetAll();
 
             // assert
-            Assert.Equal(2,
+            Assert.Equal(3,
                          actual.Count());
         }
 
@@ -58,30 +58,18 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
             ServicesConfigurationRepository sut = CreateSut();
 
             // act
-            ServiceElement actual = sut.GetByServiceName("Service");
+            ServiceElement actual = sut.GetByServiceName("Aco Service");
 
             // assert
-            Assert.Equal("Service",
+            Assert.Equal("Aco Service",
                          actual.ServiceName);
         }
 
         private ServicesConfigurationRepository CreateSut()
         {
-            var manager = Substitute.For <ISelkieConfigurationManager>();
-            IServicesCollection collection = CreateServicesCollection();
-            var section = Substitute.For <IServicesConfigurationSection>();
-            section.Instances.Returns(collection);
-            manager.GetSection("services").Returns(section);
-
+            var manager = new SelkieConfigurationManager();
             var sut = new ServicesConfigurationRepository(manager);
             return sut;
-        }
-
-        private IServicesCollection CreateServicesCollection()
-        {
-            var collection = new TestServiceCollection();
-
-            return collection;
         }
 
         private ServicesConfigurationRepository CreateSutWithNoSection()

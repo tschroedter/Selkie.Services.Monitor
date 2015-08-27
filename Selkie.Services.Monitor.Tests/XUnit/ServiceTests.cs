@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
 using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
+using Selkie.Windsor;
 using Selkie.XUnit.Extensions;
 using Xunit.Extensions;
 
@@ -27,7 +26,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                         [NotNull] Service service)
         {
             service.Stop();
@@ -37,7 +36,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopSendsServiceStoppedResponseMessageTest([NotNull] [Frozen] IBus bus,
+        public void StopSendsServiceStoppedResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                                                [NotNull] Service service)
         {
             service.Stop();
@@ -57,7 +56,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartSendsMessageTest([NotNull] [Frozen] IBus bus,
+        public void StartSendsMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                           [NotNull] Service service)
         {
             service.Start();
@@ -67,7 +66,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void InitializeCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void InitializeCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                               [NotNull] Service service)
         {
             service.Initialize();
@@ -77,7 +76,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                          [NotNull] Service service)
         {
             service.Start();

@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
 using Selkie.Common;
+using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
+using Selkie.Windsor;
 using Selkie.XUnit.Extensions;
 using Xunit;
 using Xunit.Extensions;
@@ -32,8 +32,8 @@ namespace Selkie.Services.Monitor.Tests.XUnit
         {
             var timer = Substitute.For <ITimer>();
 
-            var monitor = new ServicesMonitor(Substitute.For <IBus>(),
-                                              Substitute.For <ILogger>(),
+            var monitor = new ServicesMonitor(Substitute.For <ISelkieBus>(),
+                                              Substitute.For <ISelkieLogger>(),
                                               Substitute.For <IRunningServices>(),
                                               Substitute.For <INotRunningServices>(),
                                               timer);
@@ -47,7 +47,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void PingCallsWriteLineTest([NotNull] [Frozen] ILogger logger,
+        public void PingCallsWriteLineTest([NotNull] [Frozen] ISelkieLogger logger,
                                            [NotNull] ServicesMonitor monitor)
         {
             monitor.Ping();
@@ -57,7 +57,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void PingSendMessageToLineServiceTest([NotNull] [Frozen] IBus bus,
+        public void PingSendMessageToLineServiceTest([NotNull] [Frozen] ISelkieBus bus,
                                                      [NotNull] ServicesMonitor monitor)
         {
             monitor.Ping();
@@ -77,7 +77,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void OnTimerLogStatusCallsWriteLineTest([NotNull] [Frozen] ILogger logger,
+        public void OnTimerLogStatusCallsWriteLineTest([NotNull] [Frozen] ISelkieLogger logger,
                                                        [NotNull] [Frozen] IRunningServices runningServices,
                                                        [NotNull] ServicesMonitor monitor)
         {
@@ -90,7 +90,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void OnTimerServicesCallsPingTest([NotNull] [Frozen] IBus bus,
+        public void OnTimerServicesCallsPingTest([NotNull] [Frozen] ISelkieBus bus,
                                                  [NotNull] [Frozen] INotRunningServices notRunningServices,
                                                  [NotNull] ServicesMonitor monitor)
         {
@@ -105,7 +105,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
         [AutoNSubstituteData]
         public void OnTimerSendsStatusMessageWhenAllServicesRunningTest(
             [NotNull] [Frozen] INotRunningServices notRunningServices,
-            [NotNull] [Frozen] IBus bus,
+            [NotNull] [Frozen] ISelkieBus bus,
             [NotNull] ServicesMonitor monitor)
         {
             // assemble
@@ -120,7 +120,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void OnTimerSendsServicesStatusResponseMessageTest([NotNull] [Frozen] IBus bus,
+        public void OnTimerSendsServicesStatusResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                                                   [NotNull] ServicesMonitor monitor)
         {
             // assemble
@@ -133,7 +133,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void OnTimerWritesToLogTest([NotNull] [Frozen] ILogger logger,
+        public void OnTimerWritesToLogTest([NotNull] [Frozen] ISelkieLogger logger,
                                            [NotNull] ServicesMonitor monitor)
         {
             // assemble
@@ -146,7 +146,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void OnTimerSendsPingRequestMessageTest([NotNull] [Frozen] IBus bus,
+        public void OnTimerSendsPingRequestMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                                        [NotNull] ServicesMonitor monitor)
         {
             // assemble
@@ -169,7 +169,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void SendStatusMessageSendMessageTest([NotNull] [Frozen] IBus bus,
+        public void SendStatusMessageSendMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                                      [NotNull] [Frozen] INotRunningServices notRunningServices,
                                                      [NotNull] ServicesMonitor monitor)
         {
@@ -185,7 +185,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                          [NotNull] ServicesMonitor monitor)
         {
             // assemble
@@ -198,7 +198,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                         [NotNull] ServicesMonitor monitor)
         {
             // assemble

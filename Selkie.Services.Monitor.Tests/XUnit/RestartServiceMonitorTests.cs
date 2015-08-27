@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
+using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Common.Messages;
 using Selkie.Services.Monitor.Configuration;
+using Selkie.Windsor;
 using Selkie.XUnit.Extensions;
 using Xunit.Extensions;
 
@@ -21,13 +20,13 @@ namespace Selkie.Services.Monitor.Tests.XUnit
         // ReSharper disable TooManyArguments
         [Theory]
         [AutoNSubstituteData]
-        public void SubscribesToTestLineRequestMessageTest([NotNull] [Frozen] IBus bus,
+        public void SubscribesToTestLineRequestMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                                            [NotNull] RestartServiceMonitor monitor)
         {
             string subscriptionId = monitor.GetType().ToString();
 
             bus.Received().SubscribeAsync(subscriptionId,
-                                          Arg.Any <Func <RestartServiceRequestMessage, Task>>());
+                                          Arg.Any <Action <RestartServiceRequestMessage>>());
         }
 
         [Theory]
@@ -52,7 +51,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
         [AutoNSubstituteData]
         public void HandlerIgnoresUnknownServiceElementAndLogsMessageTest(
             [NotNull] [Frozen] IServicesConfigurationRepository repository,
-            [NotNull] [Frozen] ILogger logger,
+            [NotNull] [Frozen] ISelkieLogger logger,
             [NotNull] RestartServiceMonitor monitor)
         {
             var message = new RestartServiceRequestMessage();
@@ -82,8 +81,8 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void HandlerRestartsServiceAndLogsMessageTest([NotNull] [Frozen] ILogger logger,
-                                                             [NotNull] [Frozen] IBus bus,
+        public void HandlerRestartsServiceAndLogsMessageTest([NotNull] [Frozen] ISelkieLogger logger,
+                                                             [NotNull] [Frozen] ISelkieBus bus,
                                                              [NotNull] [Frozen] IServicesConfigurationRepository
                                                                  repository,
                                                              [NotNull] RestartServiceMonitor monitor,
@@ -103,7 +102,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                          [NotNull] RestartServiceMonitor monitor)
         {
             // assemble
@@ -116,7 +115,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                         [NotNull] RestartServiceMonitor monitor)
         {
             // assemble
@@ -131,7 +130,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
         [AutoNSubstituteData]
         public void RestartGivenServiceCallsLoggerForUnableToRestartTest([NotNull] ISelkieProcess process,
                                                                          [NotNull] ServiceElement serviceElement,
-                                                                         [NotNull] ILogger logger)
+                                                                         [NotNull] ISelkieLogger logger)
         {
             // assemble
             process.IsUnknown.Returns(true);
@@ -153,7 +152,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
         [AutoNSubstituteData]
         public void RestartGivenServiceCallsLoggerForRestartedTest([NotNull] ISelkieProcess process,
                                                                    [NotNull] ServiceElement serviceElement,
-                                                                   [NotNull] ILogger logger)
+                                                                   [NotNull] ISelkieLogger logger)
         {
             // assemble
             process.IsUnknown.Returns(false);
@@ -171,11 +170,11 @@ namespace Selkie.Services.Monitor.Tests.XUnit
             logger.Received().Info(Arg.Is <string>(x => x.EndsWith("'Service' restarted!")));
         }
 
-        private RestartServiceMonitor CreateSut(ILogger logger,
+        private RestartServiceMonitor CreateSut(ISelkieLogger logger,
                                                 IServiceStarter starter)
         {
             var sut = new RestartServiceMonitor(logger,
-                                                Substitute.For <IBus>(),
+                                                Substitute.For <ISelkieBus>(),
                                                 Substitute.For <IServicesConfigurationRepository>(),
                                                 starter);
 

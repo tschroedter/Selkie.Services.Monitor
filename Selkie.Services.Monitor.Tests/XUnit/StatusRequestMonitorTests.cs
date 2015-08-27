@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
+using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Common.Messages;
+using Selkie.Windsor;
 using Selkie.XUnit.Extensions;
 using Xunit.Extensions;
 
@@ -19,7 +18,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
     {
         [Theory]
         [AutoNSubstituteData]
-        public void SubscribesToStatusRequestMessageTest([NotNull] [Frozen] IBus bus,
+        public void SubscribesToStatusRequestMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                                          [NotNull] StatusRequestMonitor requestMonitor)
         {
             // assemble
@@ -28,13 +27,13 @@ namespace Selkie.Services.Monitor.Tests.XUnit
             // act
             // assert
             bus.Received().SubscribeAsync(subscriptionId,
-                                          Arg.Any <Func <StatusRequestMessage, Task>>());
+                                          Arg.Any <Action <StatusRequestMessage>>());
         }
 
         [Theory]
         [AutoNSubstituteData]
         // ReSharper disable once TooManyArguments
-        public void StatusRequestHandlerSendsMessageTest([NotNull] [Frozen] IBus bus,
+        public void StatusRequestHandlerSendsMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                                          [NotNull] [Frozen] INotRunningServices notRunningServices,
                                                          [NotNull] [Frozen] IRunningServices runningServices,
                                                          [NotNull] StatusRequestMonitor requestMonitor)
@@ -63,7 +62,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                          [NotNull] StatusRequestMonitor monitor)
         {
             // assemble
@@ -76,7 +75,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                         [NotNull] StatusRequestMonitor monitor)
         {
             // assemble

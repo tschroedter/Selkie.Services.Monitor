@@ -1,5 +1,3 @@
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using Selkie.EasyNetQ;
 using Selkie.Services.Common;
@@ -17,8 +15,8 @@ namespace Selkie.Services.Monitor
         public const string ServiceName = "Monitor Service";
         private readonly IServicesStopper m_Stopper;
 
-        public Service([NotNull] IBus bus,
-                       [NotNull] ILogger logger,
+        public Service([NotNull] ISelkieBus bus,
+                       [NotNull] ISelkieLogger logger,
                        [NotNull] ISelkieManagementClient client,
                        [NotNull] IServicesStopper stopper)
             : base(bus,

@@ -1,8 +1,6 @@
 ﻿using Castle.Core;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
-using Selkie.EasyNetQ.Extensions;
+using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Common.Messages;
 using Selkie.Services.Monitor.Configuration;
 using Selkie.Windsor;
@@ -15,12 +13,12 @@ namespace Selkie.Services.Monitor
         : IRestartServiceMonitor,
           IStartable
     {
-        private readonly ILogger m_Logger;
+        private readonly ISelkieLogger m_Logger;
         private readonly IServicesConfigurationRepository m_Repository;
         private readonly IServiceStarter m_Starter;
 
-        public RestartServiceMonitor([NotNull] ILogger logger,
-                                     [NotNull] IBus bus,
+        public RestartServiceMonitor([NotNull] ISelkieLogger logger,
+                                     [NotNull] ISelkieBus bus,
                                      [NotNull] IServicesConfigurationRepository repository,
                                      [NotNull] IServiceStarter starter)
         {
@@ -28,9 +26,8 @@ namespace Selkie.Services.Monitor
             m_Repository = repository;
             m_Starter = starter;
 
-            bus.SubscribeHandlerAsync <RestartServiceRequestMessage>(m_Logger,
-                                                                     GetType().FullName,
-                                                                     RestartServiceRequestHandler);
+            bus.SubscribeAsync <RestartServiceRequestMessage>(GetType().FullName,
+                                                              RestartServiceRequestHandler);
         }
 
         public void Start()

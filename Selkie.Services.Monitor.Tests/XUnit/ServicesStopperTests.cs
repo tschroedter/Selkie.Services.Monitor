@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using EasyNetQ;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
+using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
 using Selkie.Services.Monitor.Configuration;
 using Selkie.XUnit.Extensions;
@@ -17,7 +17,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
         [Theory]
         [AutoNSubstituteData]
         // ReSharper disable once TooManyArguments
-        public void StopAllServicesSendsStopMessageForAllKnownServicesTest([NotNull] [Frozen] IBus bus,
+        public void StopAllServicesSendsStopMessageForAllKnownServicesTest([NotNull] [Frozen] ISelkieBus bus,
                                                                            [NotNull] [Frozen] IServicesConfigurationRepository
                                                                                repository,
                                                                            [NotNull] ServicesStopper servicesStopper,

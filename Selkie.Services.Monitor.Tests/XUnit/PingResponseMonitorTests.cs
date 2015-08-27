@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using EasyNetQ;
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
+using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
+using Selkie.Windsor;
 using Selkie.XUnit.Extensions;
 using Xunit;
 using Xunit.Extensions;
@@ -46,7 +45,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void PingResponseHandlerCallsWriteLineTest([NotNull] [Frozen] ILogger logger,
+        public void PingResponseHandlerCallsWriteLineTest([NotNull] [Frozen] ISelkieLogger logger,
                                                           [NotNull] PingResponseMonitor monitor,
                                                           [NotNull] PingResponseMessage message)
         {
@@ -59,7 +58,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void SubscribesToPingResponseMessageTest([NotNull] [Frozen] IBus bus,
+        public void SubscribesToPingResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
                                                         [NotNull] PingResponseMonitor monitor)
         {
             // assemble
@@ -68,7 +67,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
             // act
             // assert
             bus.Received().SubscribeAsync(subscriptionId,
-                                          Arg.Any <Func <PingResponseMessage, Task>>());
+                                          Arg.Any <Action <PingResponseMessage>>());
         }
 
         [Theory]
@@ -119,7 +118,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                          [NotNull] PingResponseMonitor monitor)
         {
             // assemble
@@ -132,7 +131,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ILogger logger,
+        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                         [NotNull] PingResponseMonitor monitor)
         {
             // assemble

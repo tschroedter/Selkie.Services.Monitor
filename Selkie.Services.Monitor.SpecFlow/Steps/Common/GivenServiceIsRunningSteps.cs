@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Castle.Core.Logging;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
-using EasyNetQ;
 using NUnit.Framework;
+using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
+using Selkie.Windsor;
 using TechTalk.SpecFlow;
 
 namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
@@ -31,8 +31,8 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
             m_Container = new WindsorContainer();
             m_Container.Install(FromAssembly.This());
 
-            ScenarioContext.Current [ "ILogger" ] = m_Container.Resolve <ILogger>();
-            ScenarioContext.Current [ "IBus" ] = m_Container.Resolve <IBus>(); // todo create ISelkieBus
+            ScenarioContext.Current [ "ISelkieLogger" ] = m_Container.Resolve <ISelkieLogger>();
+            ScenarioContext.Current [ "ISelkieBus" ] = m_Container.Resolve <ISelkieBus>();
 
             m_SpecFlowService = new SpecFlowService();
             m_SpecFlowService.DeleteQueues();
@@ -70,7 +70,7 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
 
         private void WhenISendAPingMessage()
         {
-            var bus = ( IBus ) ScenarioContext.Current [ "IBus" ];
+            var bus = ( ISelkieBus ) ScenarioContext.Current [ "ISelkieBus" ];
 
             bus.PublishAsync(new PingRequestMessage());
         }
