@@ -1,6 +1,7 @@
 using System.Linq;
 using Castle.Core;
 using JetBrains.Annotations;
+using Selkie.Aop.Aspects;
 using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Common.Messages;
 using Selkie.Windsor;
@@ -8,6 +9,7 @@ using Selkie.Windsor.Extensions;
 
 namespace Selkie.Services.Monitor
 {
+    [Interceptor(typeof(MessageHandlerAspect))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class StatusRequestMonitor
         : IStatusRequestMonitor,

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Castle.Core;
 using JetBrains.Annotations;
+using Selkie.Aop.Aspects;
 using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
 using Selkie.Services.Monitor.Configuration;
@@ -8,6 +10,7 @@ using Selkie.Windsor.Extensions;
 
 namespace Selkie.Services.Monitor
 {
+    [Interceptor(typeof(MessageHandlerAspect))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class ServicesStopper : IServicesStopper
     {

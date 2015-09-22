@@ -10,5 +10,9 @@ namespace Selkie.Services.Monitor.Console
         : BasicConsoleInstaller,
           IWindsorInstaller
     {
+        public override string GetPrefixOfDllsToInstall()
+        {
+            return "Selkie.";
+        }
     }
 }
