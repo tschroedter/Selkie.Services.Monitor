@@ -10,7 +10,7 @@ using Selkie.Windsor.Extensions;
 
 namespace Selkie.Services.Monitor
 {
-    [Interceptor(typeof(MessageHandlerAspect))]
+    [Interceptor(typeof ( MessageHandlerAspect ))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class ServicesStopper : IServicesStopper
     {

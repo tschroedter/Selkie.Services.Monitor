@@ -9,7 +9,7 @@ using Selkie.Windsor;
 
 namespace Selkie.Services.Monitor
 {
-    [Interceptor(typeof(MessageHandlerAspect))]
+    [Interceptor(typeof ( MessageHandlerAspect ))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class Service
         : BaseService,
@@ -63,7 +63,8 @@ namespace Selkie.Services.Monitor
         {
             Logger.Debug("Service Initialized...");
 
-            ManagementClient.CheckOrConfigureRabbitMq(); // Todo: Not perfect to call CheckOrConfigureRabbitMq here because the services are already started!
+            ManagementClient.CheckOrConfigureRabbitMq();
+                // Todo: Not perfect to call CheckOrConfigureRabbitMq here because the services are already started!
         }
     }
 }

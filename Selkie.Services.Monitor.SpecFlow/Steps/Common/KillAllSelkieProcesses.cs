@@ -11,7 +11,7 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
             Process[] foundProcesses = Process.GetProcesses();
             Process[] selkieProcesses = foundProcesses.Where(IsSelkieProcess).ToArray();
 
-            Console.WriteLine(selkieProcesses.Count() + " Selkie processes found.");
+            Console.WriteLine(selkieProcesses.Length + " Selkie processes found.");
 
             foreach ( Process process in selkieProcesses )
             {

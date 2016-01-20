@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Selkie.Services.Monitor.Common.Messages;
 using Xunit;
 
@@ -39,7 +38,7 @@ namespace Selkie.Services.Monitor.Common.Tests.Messages.XUnit
 
             // assert
             Assert.Equal(2,
-                         message.RunningServices.Count());
+                         message.RunningServices.Length);
         }
 
         [Fact]
@@ -58,7 +57,7 @@ namespace Selkie.Services.Monitor.Common.Tests.Messages.XUnit
 
             // assert
             Assert.Equal(2,
-                         message.NotRunningServices.Count());
+                         message.NotRunningServices.Length);
         }
     }
 }
