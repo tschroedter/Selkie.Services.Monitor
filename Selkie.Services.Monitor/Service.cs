@@ -64,7 +64,7 @@ namespace Selkie.Services.Monitor
             Logger.Debug("Service Initialized...");
 
             ManagementClient.CheckOrConfigureRabbitMq();
-                // Todo: Not perfect to call CheckOrConfigureRabbitMq here because the services are already started!
+            // Todo: Not perfect to call CheckOrConfigureRabbitMq here because the services are already started!
         }
     }
 }
