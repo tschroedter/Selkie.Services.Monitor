@@ -88,8 +88,8 @@
       <HintPath>..\packages\RabbitMQ.Client.3.5.4\lib\net40\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.Aop, Version=0.6.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.Aop.0.6.19.0\lib\net45\Selkie.Aop.dll</HintPath>
+    <Reference Include="Selkie.Aop, Version=0.6.25.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.Aop.0.6.25.0\lib\net45\Selkie.Aop.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Selkie.Common, Version=0.6.228.0, Culture=neutral, processorArchitecture=MSIL">
@@ -104,12 +104,12 @@
       <HintPath>..\packages\Selkie.Geometry.0.6.137.0\lib\net45\Selkie.Geometry.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.Services.Common, Version=0.6.174.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.Services.Common.0.6.174.0\lib\net45\Selkie.Services.Common.dll</HintPath>
+    <Reference Include="Selkie.Services.Common, Version=0.6.180.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.Services.Common.0.6.180.0\lib\net45\Selkie.Services.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.Services.Lines, Version=0.6.244.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.Services.Lines.0.6.244.0\lib\net45\Selkie.Services.Lines.dll</HintPath>
+    <Reference Include="Selkie.Services.Lines, Version=0.6.249.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.Services.Lines.0.6.249.0\lib\net45\Selkie.Services.Lines.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Selkie.Services.Lines.Common, Version=0.6.37.0, Culture=neutral, processorArchitecture=MSIL">
