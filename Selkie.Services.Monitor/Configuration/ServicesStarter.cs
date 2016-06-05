@@ -11,18 +11,18 @@ namespace Selkie.Services.Monitor.Configuration
         : IServicesStarter,
           IStartable
     {
-        private readonly ISelkieLogger m_Logger;
-        private readonly IServicesConfigurationRepository m_Repository;
-        private readonly IServiceStarter m_Starter;
-
         public ServicesStarter([NotNull] ISelkieLogger logger,
                                [NotNull] IServicesConfigurationRepository repository,
-                               [NotNull] IServiceStarter starter)
+                               [NotNull] IServiceElementStarter starter)
         {
             m_Logger = logger;
             m_Repository = repository;
             m_Starter = starter;
         }
+
+        private readonly ISelkieLogger m_Logger;
+        private readonly IServicesConfigurationRepository m_Repository;
+        private readonly IServiceElementStarter m_Starter;
 
         public void Start()
         {
@@ -42,23 +42,7 @@ namespace Selkie.Services.Monitor.Configuration
 
             foreach ( ServiceElement serviceElement in allServices )
             {
-                StartService(serviceElement);
-            }
-        }
-
-        private void StartService([NotNull] ServiceElement serviceElement)
-        {
-            m_Logger.Info("Starting service '{0}'...".Inject(serviceElement.ServiceName));
-
-            ISelkieProcess process = m_Starter.Start(serviceElement);
-
-            if ( process.IsUnknown )
-            {
-                m_Logger.Error("...unable to start service '{0}'!".Inject(serviceElement.ServiceName));
-            }
-            else
-            {
-                m_Logger.Info("...service '{0}' started!".Inject(serviceElement.ServiceName));
+                m_Starter.StartService(serviceElement);
             }
         }
     }

@@ -8,9 +8,6 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
     [Binding]
     public abstract class BaseStep
     {
-        private readonly ISelkieBus m_Bus;
-        private readonly StepHelper m_Helper = new StepHelper();
-
         protected BaseStep()
         {
             m_Bus = ( ISelkieBus ) ScenarioContext.Current [ "ISelkieBus" ];
@@ -24,17 +21,20 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
             }
         }
 
+        private readonly ISelkieBus m_Bus;
+        private readonly StepHelper m_Helper = new StepHelper();
+
+        public abstract void Do();
+
+        public void DoNothing()
+        {
+        }
+
         public void SleepWaitAndDo([NotNull] Func <bool> breakIfTrue,
                                    [NotNull] Action doSomething)
         {
             m_Helper.SleepWaitAndDo(breakIfTrue,
                                     doSomething);
         }
-
-        public void DoNothing()
-        {
-        }
-
-        public abstract void Do();
     }
 }

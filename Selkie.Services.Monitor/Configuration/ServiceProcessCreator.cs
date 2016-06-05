@@ -8,10 +8,6 @@ namespace Selkie.Services.Monitor.Configuration
     [ProjectComponent(Lifestyle.Transient)]
     public class ServiceProcessCreator : IServiceProcessCreator
     {
-        private readonly IPathToFullPathConverter m_Converter;
-        private readonly ISelkieLogger m_Logger;
-        private readonly ISelkieProcessFactory m_Factory;
-
         public ServiceProcessCreator([NotNull] ISelkieLogger logger,
                                      [NotNull] ISelkieProcessFactory factory,
                                      [NotNull] IPathToFullPathConverter converter)
@@ -20,6 +16,10 @@ namespace Selkie.Services.Monitor.Configuration
             m_Factory = factory;
             m_Converter = converter;
         }
+
+        private readonly IPathToFullPathConverter m_Converter;
+        private readonly ISelkieProcessFactory m_Factory;
+        private readonly ISelkieLogger m_Logger;
 
         [NotNull]
         public ISelkieProcess Create(ServiceElement service)
@@ -30,7 +30,8 @@ namespace Selkie.Services.Monitor.Configuration
             string arguments = " /C start /B /D \"{0}\" {1}".Inject(folderName,
                                                                     service.FileName);
 
-            m_Logger.Info("Trying to created process with the following parameters:\r\nArguments: '{0}'\r\nFolderName: '{1}'\r\nWorkingFolder: '{2}'",
+            m_Logger.Info(
+                          "Trying to created process with the following parameters:\r\nArguments: '{0}'\r\nFolderName: '{1}'\r\nWorkingFolder: '{2}'",
                           arguments,
                           folderName,
                           workingFolder);

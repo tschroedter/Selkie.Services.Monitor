@@ -13,101 +13,110 @@ using Xunit.Extensions;
 namespace Selkie.Services.Monitor.Tests.XUnit
 {
     [ExcludeFromCodeCoverage]
-    //ncrunch: no coverage start
     public sealed class RestartServiceMonitorTests
     {
-        // ReSharper disable MaximumChainedReferences
-        // ReSharper disable TooManyArguments
         [Theory]
         [AutoNSubstituteData]
-        public void SubscribesToTestLineRequestMessageTest([NotNull] [Frozen] ISelkieBus bus,
-                                                           [NotNull] RestartServiceMonitor monitor)
+        public void HandlerIgnoresUnknownServiceElementAndLogsMessageTest(
+            [NotNull] [Frozen] IServicesConfigurationRepository repository,
+            [NotNull] [Frozen] ISelkieLogger logger,
+            [NotNull] RestartServiceMonitor sut)
         {
-            string subscriptionId = monitor.GetType().ToString();
+            // assemble
+            var message = new RestartServiceRequestMessage();
 
-            bus.Received().SubscribeAsync(subscriptionId,
-                                          Arg.Any <Action <RestartServiceRequestMessage>>());
+            repository.GetByServiceName(message.ServiceName).Returns(ServiceElement.Unknown);
+
+            // act
+            sut.RestartServiceRequestHandler(message);
+
+            // assert
+            logger.Received().Error(Arg.Any <string>());
         }
 
         [Theory]
         [AutoNSubstituteData]
         public void HandlerIgnoresUnknownServiceElementTest(
             [NotNull] [Frozen] IServicesConfigurationRepository repository,
-            [NotNull] [Frozen] IServiceStarter starter,
-            [NotNull] RestartServiceMonitor monitor)
+            [NotNull] [Frozen] IServiceElementStarter starter,
+            [NotNull] RestartServiceMonitor sut)
         {
+            // assemble
             var message = new RestartServiceRequestMessage();
 
             repository.GetByServiceName(message.ServiceName).Returns(ServiceElement.Unknown);
 
             starter.ClearReceivedCalls();
 
-            monitor.RestartServiceRequestHandler(message);
+            // act
+            sut.RestartServiceRequestHandler(message);
 
-            starter.DidNotReceive().Start(Arg.Any <ServiceElement>());
+            // assert
+            starter.DidNotReceive().StartService(Arg.Any <ServiceElement>());
         }
 
         [Theory]
         [AutoNSubstituteData]
-        public void HandlerIgnoresUnknownServiceElementAndLogsMessageTest(
+        public void HandlerRestartsServiceAndLogsMessageTest(
+            [NotNull] [Frozen] IServiceElementStarter starter,
             [NotNull] [Frozen] IServicesConfigurationRepository repository,
-            [NotNull] [Frozen] ISelkieLogger logger,
-            [NotNull] RestartServiceMonitor monitor)
+            [NotNull] RestartServiceMonitor sut,
+            [NotNull] ServiceElement serviceElement)
         {
-            var message = new RestartServiceRequestMessage();
+            // assemble
+            repository.GetByServiceName(Arg.Any <string>()).Returns(serviceElement);
 
-            repository.GetByServiceName(message.ServiceName).Returns(ServiceElement.Unknown);
+            // act
+            sut.RestartServiceRequestHandler(new RestartServiceRequestMessage());
 
-            monitor.RestartServiceRequestHandler(message);
-
-            logger.Received().Error(Arg.Any <string>());
+            // assert
+            starter.Received().StartService(serviceElement);
         }
 
         [Theory]
         [AutoNSubstituteData]
-        public void HandlerRestartsServiceTest([NotNull] [Frozen] IServicesConfigurationRepository repository,
-                                               [NotNull] [Frozen] IServiceStarter serviceStarter,
-                                               [NotNull] RestartServiceMonitor monitor,
-                                               [NotNull] ServiceElement serviceElement)
+        public void HandlerRestartsServiceTest(
+            [NotNull] [Frozen] IServicesConfigurationRepository repository,
+            [NotNull] [Frozen] IServiceElementStarter starter,
+            [NotNull] RestartServiceMonitor sut,
+            [NotNull] ServiceElement serviceElement)
         {
+            // assemble
             var message = new RestartServiceRequestMessage();
 
             repository.GetByServiceName(message.ServiceName).Returns(serviceElement);
 
-            monitor.RestartServiceRequestHandler(message);
+            // act
+            sut.RestartServiceRequestHandler(message);
 
-            serviceStarter.Received().Start(serviceElement);
+            // assert
+            starter.Received().StartService(serviceElement);
         }
 
         [Theory]
         [AutoNSubstituteData]
-        public void HandlerRestartsServiceAndLogsMessageTest([NotNull] [Frozen] ISelkieLogger logger,
-                                                             [NotNull] [Frozen] ISelkieBus bus,
-                                                             [NotNull] [Frozen] IServicesConfigurationRepository
-                                                                 repository,
-                                                             [NotNull] RestartServiceMonitor monitor,
-                                                             [NotNull] ServiceElement serviceElement,
-                                                             [NotNull] ISelkieProcess selkieProcess)
-        {
-            var serviceStarter = Substitute.For <IServiceStarter>();
-
-            repository.GetByServiceName(Arg.Any <string>()).Returns(serviceElement);
-
-            serviceStarter.Start(Arg.Any <ServiceElement>()).Returns(selkieProcess);
-
-            monitor.RestartServiceRequestHandler(new RestartServiceRequestMessage());
-
-            logger.Received().Info(Arg.Any <string>());
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
-                                         [NotNull] RestartServiceMonitor monitor)
+        public void RestartGivenServiceCallsStarterWhenCalled(
+            [NotNull] [Frozen] IServiceElementStarter starter,
+            [NotNull] ServiceElement serviceElement,
+            [NotNull] RestartServiceMonitor sut)
         {
             // assemble
             // act
-            monitor.Start();
+            sut.RestartGivenService(serviceElement);
+
+            // assert
+            starter.Received().StartService(serviceElement);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void StartCallsLoggerTest(
+            [NotNull] [Frozen] ISelkieLogger logger,
+            [NotNull] RestartServiceMonitor sut)
+        {
+            // assemble
+            // act
+            sut.Start();
 
             // assert
             logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Started")));
@@ -115,12 +124,13 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
-                                        [NotNull] RestartServiceMonitor monitor)
+        public void StopCallsLoggerTest(
+            [NotNull] [Frozen] ISelkieLogger logger,
+            [NotNull] RestartServiceMonitor sut)
         {
             // assemble
             // act
-            monitor.Stop();
+            sut.Stop();
 
             // assert
             logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Stopped")));
@@ -128,57 +138,17 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void RestartGivenServiceCallsLoggerForUnableToRestartTest([NotNull] ISelkieProcess process,
-                                                                         [NotNull] ServiceElement serviceElement,
-                                                                         [NotNull] ISelkieLogger logger)
+        public void SubscribesToTestLineRequestMessageTest(
+            [NotNull] [Frozen] ISelkieBus bus,
+            [NotNull] RestartServiceMonitor sut)
         {
             // assemble
-            process.IsUnknown.Returns(true);
-            serviceElement.ServiceName = "Service";
-
-            var starter = Substitute.For <IServiceStarter>();
-            starter.Start(serviceElement).Returns(process);
-            RestartServiceMonitor sut = CreateSut(logger,
-                                                  starter);
+            string subscriptionId = sut.GetType().ToString();
 
             // act
-            sut.RestartGivenService(serviceElement);
-
             // assert
-            logger.Received().Error(Arg.Is <string>(x => x.EndsWith("unable to restart service 'Service'!")));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void RestartGivenServiceCallsLoggerForRestartedTest([NotNull] ISelkieProcess process,
-                                                                   [NotNull] ServiceElement serviceElement,
-                                                                   [NotNull] ISelkieLogger logger)
-        {
-            // assemble
-            process.IsUnknown.Returns(false);
-            serviceElement.ServiceName = "Service";
-
-            var starter = Substitute.For <IServiceStarter>();
-            starter.Start(serviceElement).Returns(process);
-            RestartServiceMonitor sut = CreateSut(logger,
-                                                  starter);
-
-            // act
-            sut.RestartGivenService(serviceElement);
-
-            // assert
-            logger.Received().Info(Arg.Is <string>(x => x.EndsWith("'Service' restarted!")));
-        }
-
-        private RestartServiceMonitor CreateSut(ISelkieLogger logger,
-                                                IServiceStarter starter)
-        {
-            var sut = new RestartServiceMonitor(logger,
-                                                Substitute.For <ISelkieBus>(),
-                                                Substitute.For <IServicesConfigurationRepository>(),
-                                                starter);
-
-            return sut;
+            bus.Received().SubscribeAsync(subscriptionId,
+                                          Arg.Any <Action <RestartServiceRequestMessage>>());
         }
     }
 }

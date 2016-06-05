@@ -8,15 +8,15 @@ namespace Selkie.Services.Monitor.Configuration
     [ProjectComponent(Lifestyle.Singleton)]
     public class ServicesConfigurationRepository : IServicesConfigurationRepository
     {
-        private readonly ISelkieConfigurationManager m_Manager;
-        private readonly Dictionary <string, ServiceElement> m_Services;
-
         public ServicesConfigurationRepository([NotNull] ISelkieConfigurationManager manager)
         {
             m_Manager = manager;
 
             m_Services = Load();
         }
+
+        private readonly ISelkieConfigurationManager m_Manager;
+        private readonly Dictionary <string, ServiceElement> m_Services;
 
         public ServiceElement GetByServiceName(string name)
         {

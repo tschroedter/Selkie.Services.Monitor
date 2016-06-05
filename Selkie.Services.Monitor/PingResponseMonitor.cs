@@ -14,11 +14,6 @@ namespace Selkie.Services.Monitor
         : IPingResponseMonitor,
           IStartable
     {
-        internal readonly string ServiceMonitorName;
-        internal readonly Dictionary <string, PingInformation> Services = new Dictionary <string, PingInformation>();
-        private readonly ISelkieLogger m_Logger;
-        private readonly IRunningServices m_RunningServices;
-
         public PingResponseMonitor([NotNull] ISelkieBus bus,
                                    [NotNull] ISelkieLogger logger,
                                    [NotNull] IRunningServices runningServices)
@@ -31,6 +26,11 @@ namespace Selkie.Services.Monitor
                                                      PingResponseHandler);
         }
 
+        internal readonly string ServiceMonitorName;
+        internal readonly Dictionary <string, PingInformation> Services = new Dictionary <string, PingInformation>();
+        private readonly ISelkieLogger m_Logger;
+        private readonly IRunningServices m_RunningServices;
+
         public void Start()
         {
             m_Logger.Info("Started '{0}'!".Inject(GetType().FullName));
@@ -39,6 +39,11 @@ namespace Selkie.Services.Monitor
         public void Stop()
         {
             m_Logger.Info("Stopped '{0}'!".Inject(GetType().FullName));
+        }
+
+        internal bool IsMessageIgnored([NotNull] PingResponseMessage message)
+        {
+            return message.ServiceName == ServiceMonitorName;
         }
 
         internal void PingResponseHandler([NotNull] PingResponseMessage message)
@@ -64,11 +69,6 @@ namespace Selkie.Services.Monitor
                                                              duration.Milliseconds);
 
             m_Logger.Debug(text);
-        }
-
-        internal bool IsMessageIgnored([NotNull] PingResponseMessage message)
-        {
-            return message.ServiceName == ServiceMonitorName;
         }
     }
 }

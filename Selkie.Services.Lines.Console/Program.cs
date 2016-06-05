@@ -9,7 +9,6 @@ namespace Selkie.Services.Lines.Console
     //ncrunch: no coverage start
     public class Program : ServiceMain
     {
-        // todo TopShelf
         public static void Main()
         {
             StartServiceAndRunForever(FromAssembly.This(),

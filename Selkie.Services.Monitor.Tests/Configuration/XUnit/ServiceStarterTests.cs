@@ -16,6 +16,24 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
     {
         [Theory]
         [AutoNSubstituteData]
+        public void StartCallsStartOnProcessTest([NotNull] ServiceElement serviceElement,
+                                                 [NotNull] ISelkieProcess selkieProcess)
+        {
+            // assemble
+            var creator = Substitute.For <IServiceProcessCreator>();
+            creator.Create(serviceElement).Returns(selkieProcess);
+
+            var serviceStarter = new ServiceStarter(creator);
+
+            // act
+            serviceStarter.Start(serviceElement);
+
+            // assert
+            selkieProcess.Received().Start();
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
         public void StartCreatesNewProcessTest([NotNull] [Frozen] IServiceProcessCreator creator,
                                                [NotNull] ServiceElement serviceElement,
                                                [NotNull] ServiceStarter serviceStarter)
@@ -59,24 +77,6 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
             // assert
             Assert.True(actual.IsUnknown);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StartCallsStartOnProcessTest([NotNull] ServiceElement serviceElement,
-                                                 [NotNull] ISelkieProcess selkieProcess)
-        {
-            // assemble
-            var creator = Substitute.For <IServiceProcessCreator>();
-            creator.Create(serviceElement).Returns(selkieProcess);
-
-            var serviceStarter = new ServiceStarter(creator);
-
-            // act
-            serviceStarter.Start(serviceElement);
-
-            // assert
-            selkieProcess.Received().Start();
         }
     }
 }

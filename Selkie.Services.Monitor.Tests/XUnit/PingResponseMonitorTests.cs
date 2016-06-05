@@ -32,42 +32,17 @@ namespace Selkie.Services.Monitor.Tests.XUnit
             runningServices.Received().AddOrUpdateStatus(message.ServiceName);
         }
 
-        [NotNull]
-        private static PingResponseMessage CreatePingResponseMessageForTwo()
+        [Theory]
+        [AutoNSubstituteData]
+        public void IsMessageIgnoredReturnsFalseForOtherServiceTest([NotNull] PingResponseMonitor monitor)
         {
             var message = new PingResponseMessage
                           {
-                              ServiceName = "Two",
+                              ServiceName = "Other Service Name",
                               Request = DateTime.Now
                           };
-            return message;
-        }
 
-        [Theory]
-        [AutoNSubstituteData]
-        public void PingResponseHandlerCallsWriteLineTest([NotNull] [Frozen] ISelkieLogger logger,
-                                                          [NotNull] PingResponseMonitor monitor,
-                                                          [NotNull] PingResponseMessage message)
-        {
-            // act
-            monitor.PingResponseHandler(message);
-
-            // assert
-            logger.Received().Debug(Arg.Is <string>(x => x.Contains(message.ServiceName)));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void SubscribesToPingResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
-                                                        [NotNull] PingResponseMonitor monitor)
-        {
-            // assemble
-            string subscriptionId = monitor.GetType().ToString();
-
-            // act
-            // assert
-            bus.Received().SubscribeAsync(subscriptionId,
-                                          Arg.Any <Action <PingResponseMessage>>());
+            Assert.False(monitor.IsMessageIgnored(message));
         }
 
         [Theory]
@@ -81,6 +56,19 @@ namespace Selkie.Services.Monitor.Tests.XUnit
                           };
 
             Assert.True(monitor.IsMessageIgnored(message));
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void PingResponseHandlerCallsWriteLineTest([NotNull] [Frozen] ISelkieLogger logger,
+                                                          [NotNull] PingResponseMonitor monitor,
+                                                          [NotNull] PingResponseMessage message)
+        {
+            // act
+            monitor.PingResponseHandler(message);
+
+            // assert
+            logger.Received().Debug(Arg.Is <string>(x => x.Contains(message.ServiceName)));
         }
 
         [Theory]
@@ -101,19 +89,6 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
             // assert
             runningServices.DidNotReceive().AddOrUpdateStatus(message.ServiceName);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void IsMessageIgnoredReturnsFalseForOtherServiceTest([NotNull] PingResponseMonitor monitor)
-        {
-            var message = new PingResponseMessage
-                          {
-                              ServiceName = "Other Service Name",
-                              Request = DateTime.Now
-                          };
-
-            Assert.False(monitor.IsMessageIgnored(message));
         }
 
         [Theory]
@@ -140,6 +115,31 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
             // assert
             logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Stopped")));
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void SubscribesToPingResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
+                                                        [NotNull] PingResponseMonitor monitor)
+        {
+            // assemble
+            string subscriptionId = monitor.GetType().ToString();
+
+            // act
+            // assert
+            bus.Received().SubscribeAsync(subscriptionId,
+                                          Arg.Any <Action <PingResponseMessage>>());
+        }
+
+        [NotNull]
+        private static PingResponseMessage CreatePingResponseMessageForTwo()
+        {
+            var message = new PingResponseMessage
+                          {
+                              ServiceName = "Two",
+                              Request = DateTime.Now
+                          };
+            return message;
         }
     }
 }

@@ -13,14 +13,10 @@ namespace Selkie.Services.Monitor
         : IRestartServiceMonitor,
           IStartable
     {
-        private readonly ISelkieLogger m_Logger;
-        private readonly IServicesConfigurationRepository m_Repository;
-        private readonly IServiceStarter m_Starter;
-
         public RestartServiceMonitor([NotNull] ISelkieLogger logger,
                                      [NotNull] ISelkieBus bus,
                                      [NotNull] IServicesConfigurationRepository repository,
-                                     [NotNull] IServiceStarter starter)
+                                     [NotNull] IServiceElementStarter starter)
         {
             m_Logger = logger;
             m_Repository = repository;
@@ -30,6 +26,10 @@ namespace Selkie.Services.Monitor
                                                               RestartServiceRequestHandler);
         }
 
+        private readonly ISelkieLogger m_Logger;
+        private readonly IServicesConfigurationRepository m_Repository;
+        private readonly IServiceElementStarter m_Starter;
+
         public void Start()
         {
             m_Logger.Info("Started '{0}'!".Inject(GetType().FullName));
@@ -38,6 +38,13 @@ namespace Selkie.Services.Monitor
         public void Stop()
         {
             m_Logger.Info("Stopped '{0}'!".Inject(GetType().FullName));
+        }
+
+        internal void RestartGivenService([NotNull] ServiceElement serviceElement)
+        {
+            m_Logger.Info("Trying to restarting service '{0}'...".Inject(serviceElement.ServiceName));
+
+            m_Starter.StartService(serviceElement);
         }
 
         internal void RestartServiceRequestHandler([NotNull] RestartServiceRequestMessage message)
@@ -52,22 +59,6 @@ namespace Selkie.Services.Monitor
             }
 
             RestartGivenService(serviceElement);
-        }
-
-        internal void RestartGivenService([NotNull] ServiceElement serviceElement)
-        {
-            m_Logger.Info("Restarting service '{0}'...".Inject(serviceElement.ServiceName));
-
-            ISelkieProcess process = m_Starter.Start(serviceElement);
-
-            if ( process.IsUnknown )
-            {
-                m_Logger.Error("...unable to restart service '{0}'!".Inject(serviceElement.ServiceName));
-            }
-            else
-            {
-                m_Logger.Info("...service '{0}' restarted!".Inject(serviceElement.ServiceName));
-            }
         }
     }
 }

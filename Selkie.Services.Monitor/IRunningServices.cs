@@ -5,18 +5,18 @@ namespace Selkie.Services.Monitor
 {
     public interface IRunningServices
     {
-        bool IsServiceRunning([NotNull] string serviceName);
-
-        [NotNull]
-        IPingInformation GetServiceInformation([NotNull] string serviceName);
+        void AddOrUpdateStatus([NotNull] string serviceName);
+        bool AreGivenServicesAllRunning([NotNull] IEnumerable <string> serviceNames);
 
         [NotNull]
         IEnumerable <string> CurrentlyRunning();
 
         [NotNull]
+        IPingInformation GetServiceInformation([NotNull] string serviceName);
+
+        [NotNull]
         string GetStatus();
 
-        void AddOrUpdateStatus([NotNull] string serviceName);
-        bool AreGivenServicesAllRunning([NotNull] IEnumerable <string> serviceNames);
+        bool IsServiceRunning([NotNull] string serviceName);
     }
 }

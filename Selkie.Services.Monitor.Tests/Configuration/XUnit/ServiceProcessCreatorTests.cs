@@ -14,29 +14,52 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
     //ncrunch: no coverage start
     public sealed class ServiceProcessCreatorTests
     {
-        // todo try to get sut into AutoNSub...
         [Theory]
         [AutoNSubstituteData]
-        public void Create_ReturnsProcess_WhenCalled([NotNull] ISelkieLogger logger,
-                                                     [NotNull] ISelkieProcess selkieProcess,
-                                                     [NotNull] IPathToFullPathConverter converter,
-                                                     [NotNull] ServiceElement serviceElement)
+        public void Create_CallsToFullPathForFolderName_WhenCalled([NotNull] ISelkieLogger logger,
+                                                                   [NotNull] ISelkieProcessFactory factory,
+                                                                   [NotNull] IPathToFullPathConverter converter,
+                                                                   [NotNull] ServiceElement serviceElement)
         {
             // assemble
-            var factory = Substitute.For <ISelkieProcessFactory>();
-            ISelkieProcess process = factory.Create(Arg.Any <ProcessStartInfo>());
-            process.Returns(selkieProcess);
+            var expected = "C:\\Temp";
+            serviceElement.FolderName = ".\\Temp";
+            converter.ToFullPath(serviceElement.FolderName).Returns(expected);
 
             var creator = new ServiceProcessCreator(logger,
                                                     factory,
                                                     converter);
 
             // act
-            ISelkieProcess actual = creator.Create(serviceElement);
+            creator.Create(serviceElement);
 
             // assert
-            Assert.Equal(selkieProcess,
-                         actual);
+            factory.Received()
+                   .Create(Arg.Is <ProcessStartInfo>(x => x.Arguments.Contains(expected)));
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void Create_CallsToFullPathForWorkingFolder_WhenCalled([NotNull] ISelkieLogger logger,
+                                                                      [NotNull] ISelkieProcessFactory factory,
+                                                                      [NotNull] IPathToFullPathConverter converter,
+                                                                      [NotNull] ServiceElement serviceElement)
+        {
+            // assemble
+            var expected = "C:\\Temp";
+            serviceElement.WorkingFolder = "C:\\Temp";
+            converter.ToFullPath(serviceElement.WorkingFolder).Returns(expected);
+
+            var creator = new ServiceProcessCreator(logger,
+                                                    factory,
+                                                    converter);
+
+            // act
+            creator.Create(serviceElement);
+
+            // assert
+            factory.Received()
+                   .Create(Arg.Is <ProcessStartInfo>(x => x.WorkingDirectory == expected));
         }
 
         [Theory]
@@ -109,52 +132,29 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
             converter.Received().ToFullPath(serviceElement.WorkingFolder);
         }
 
+        // todo try to get sut into AutoNSub...
         [Theory]
         [AutoNSubstituteData]
-        public void Create_CallsToFullPathForFolderName_WhenCalled([NotNull] ISelkieLogger logger,
-                                                                   [NotNull] ISelkieProcessFactory factory,
-                                                                   [NotNull] IPathToFullPathConverter converter,
-                                                                   [NotNull] ServiceElement serviceElement)
+        public void Create_ReturnsProcess_WhenCalled([NotNull] ISelkieLogger logger,
+                                                     [NotNull] ISelkieProcess selkieProcess,
+                                                     [NotNull] IPathToFullPathConverter converter,
+                                                     [NotNull] ServiceElement serviceElement)
         {
             // assemble
-            var expected = "C:\\Temp";
-            serviceElement.FolderName = ".\\Temp";
-            converter.ToFullPath(serviceElement.FolderName).Returns(expected);
+            var factory = Substitute.For <ISelkieProcessFactory>();
+            ISelkieProcess process = factory.Create(Arg.Any <ProcessStartInfo>());
+            process.Returns(selkieProcess);
 
             var creator = new ServiceProcessCreator(logger,
                                                     factory,
                                                     converter);
 
             // act
-            creator.Create(serviceElement);
+            ISelkieProcess actual = creator.Create(serviceElement);
 
             // assert
-            factory.Received()
-                   .Create(Arg.Is <ProcessStartInfo>(x => x.Arguments.Contains(expected)));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void Create_CallsToFullPathForWorkingFolder_WhenCalled([NotNull] ISelkieLogger logger,
-                                                                      [NotNull] ISelkieProcessFactory factory,
-                                                                      [NotNull] IPathToFullPathConverter converter,
-                                                                      [NotNull] ServiceElement serviceElement)
-        {
-            // assemble
-            var expected = "C:\\Temp";
-            serviceElement.WorkingFolder = "C:\\Temp";
-            converter.ToFullPath(serviceElement.WorkingFolder).Returns(expected);
-
-            var creator = new ServiceProcessCreator(logger,
-                                                    factory,
-                                                    converter);
-
-            // act
-            creator.Create(serviceElement);
-
-            // assert
-            factory.Received()
-                   .Create(Arg.Is <ProcessStartInfo>(x => x.WorkingDirectory == expected));
+            Assert.Equal(selkieProcess,
+                         actual);
         }
     }
 }

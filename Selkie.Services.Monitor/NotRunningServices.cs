@@ -9,15 +9,13 @@ namespace Selkie.Services.Monitor
     [ProjectComponent(Lifestyle.Singleton)]
     public class NotRunningServices : INotRunningServices
     {
-        private readonly IServicesConfigurationRepository m_Repository;
-        private readonly IRunningServices m_RunningServices;
-
-        public NotRunningServices([NotNull] IServicesConfigurationRepository repository,
-                                  [NotNull] IRunningServices runningServices)
+        public NotRunningServices(
+            [NotNull] IDetermineNotRunningServices determineNotRunningServices)
         {
-            m_Repository = repository;
-            m_RunningServices = runningServices;
+            m_DetermineNotRunningServices = determineNotRunningServices;
         }
+
+        private readonly IDetermineNotRunningServices m_DetermineNotRunningServices;
 
         public bool AreAllServicesRunning()
         {
@@ -28,25 +26,7 @@ namespace Selkie.Services.Monitor
 
         public IEnumerable <ServiceElement> CurrentlyNotRunning()
         {
-            lock ( this )
-            {
-                IEnumerable <ServiceElement> configured = m_Repository.GetAll();
-                string[] running = m_RunningServices.CurrentlyRunning().ToArray();
-
-                var notRunning = new List <ServiceElement>();
-
-                foreach ( ServiceElement serviceElement in configured )
-                {
-                    bool isRunning = running.Any(serviceName => serviceElement.ServiceName.Contains(serviceName));
-
-                    if ( !isRunning )
-                    {
-                        notRunning.Add(serviceElement);
-                    }
-                }
-
-                return notRunning;
-            }
+            return m_DetermineNotRunningServices.GetNotRunningServices();
         }
     }
 }

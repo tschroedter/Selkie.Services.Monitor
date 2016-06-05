@@ -40,18 +40,6 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
         }
 
         [Fact]
-        public void GetByServiceName_RetrunsUnknown_ForUnknownName()
-        {
-            // assemble
-            ServicesConfigurationRepository sut = CreateSut();
-
-            // act
-            // assert
-            Assert.Equal(ServiceElement.Unknown,
-                         sut.GetByServiceName("Unknown"));
-        }
-
-        [Fact]
         public void GetByServiceName_RetrunsKnown_ForName()
         {
             // assemble
@@ -63,6 +51,18 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
             // assert
             Assert.Equal("Aco Service",
                          actual.ServiceName);
+        }
+
+        [Fact]
+        public void GetByServiceName_RetrunsUnknown_ForUnknownName()
+        {
+            // assemble
+            ServicesConfigurationRepository sut = CreateSut();
+
+            // act
+            // assert
+            Assert.Equal(ServiceElement.Unknown,
+                         sut.GetByServiceName("Unknown"));
         }
 
         private ServicesConfigurationRepository CreateSut()

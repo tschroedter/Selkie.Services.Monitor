@@ -23,25 +23,6 @@ namespace Selkie.Services.Monitor.Common.Tests.Messages.XUnit
         }
 
         [Fact]
-        public void RunningServicesRoundtripTest()
-        {
-            // assemble
-            // act
-            var message = new StatusResponseMessage
-                          {
-                              RunningServices = new[]
-                                                {
-                                                    "One",
-                                                    "Two"
-                                                }
-                          };
-
-            // assert
-            Assert.Equal(2,
-                         message.RunningServices.Length);
-        }
-
-        [Fact]
         public void NotRunningServicesRoundtripTest()
         {
             // assemble
@@ -58,6 +39,25 @@ namespace Selkie.Services.Monitor.Common.Tests.Messages.XUnit
             // assert
             Assert.Equal(2,
                          message.NotRunningServices.Length);
+        }
+
+        [Fact]
+        public void RunningServicesRoundtripTest()
+        {
+            // assemble
+            // act
+            var message = new StatusResponseMessage
+                          {
+                              RunningServices = new[]
+                                                {
+                                                    "One",
+                                                    "Two"
+                                                }
+                          };
+
+            // assert
+            Assert.Equal(2,
+                         message.RunningServices.Length);
         }
     }
 }

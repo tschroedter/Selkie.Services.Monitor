@@ -7,12 +7,12 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
 {
     public partial class ServiceHandlers
     {
-        private readonly ISelkieBus m_Bus;
-
         public ServiceHandlers()
         {
             m_Bus = ( ISelkieBus ) ScenarioContext.Current [ "ISelkieBus" ];
         }
+
+        private readonly ISelkieBus m_Bus;
 
         public void Subscribe()
         {
@@ -28,22 +28,6 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
             SubscribeOther();
         }
 
-        private void ServiceStoppedResponseHandler([NotNull] ServiceStoppedResponseMessage message)
-        {
-            if ( message.ServiceName == Helper.ServiceName )
-            {
-                ScenarioContext.Current [ "IsReceivedServiceStoppedResponse" ] = true;
-            }
-        }
-
-        private void ServiceStartedResponseHandler([NotNull] ServiceStartedResponseMessage message)
-        {
-            if ( message.ServiceName == Helper.ServiceName )
-            {
-                ScenarioContext.Current [ "IsReceivedServiceStartedResponse" ] = true;
-            }
-        }
-
         private void PingResponseHandler([NotNull] PingResponseMessage message)
         {
             ScenarioContext.Current [ "IsReceivedPingResponse" ] = true;
@@ -55,6 +39,22 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
             else if ( message.ServiceName.Contains("Racetracks") )
             {
                 ScenarioContext.Current [ "IsReceivedPingResponseForRacetracksService" ] = true;
+            }
+        }
+
+        private void ServiceStartedResponseHandler([NotNull] ServiceStartedResponseMessage message)
+        {
+            if ( message.ServiceName == Helper.ServiceName )
+            {
+                ScenarioContext.Current [ "IsReceivedServiceStartedResponse" ] = true;
+            }
+        }
+
+        private void ServiceStoppedResponseHandler([NotNull] ServiceStoppedResponseMessage message)
+        {
+            if ( message.ServiceName == Helper.ServiceName )
+            {
+                ScenarioContext.Current [ "IsReceivedServiceStoppedResponse" ] = true;
             }
         }
     }

@@ -11,60 +11,16 @@ namespace Selkie.Services.Monitor.Tests.XUnit
     //ncrunch: no coverage start
     public sealed class PingInformationTests
     {
-        [Fact]
-        public void UnknownTest()
-        {
-            Assert.True(PingInformation.Unknown.IsUnknown);
-        }
-
         [Theory]
         [AutoNSubstituteData]
-        public void KnownTest([NotNull] PingInformation pingInformation)
+        public void AgeInMillisecondsForRunningTest([NotNull] PingInformation pingInformation)
         {
-            Assert.False(pingInformation.IsUnknown);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void ServiceNameRoundtripTest([NotNull] PingInformation pingInformation)
-        {
-            pingInformation.ServiceName = "One";
-
-            Assert.Equal("One",
-                         pingInformation.ServiceName);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void ReceivedRoundtripTest([NotNull] PingInformation pingInformation)
-        {
-            DateTime received = DateTime.Parse("2001-01-01 00:00:00");
-
+            DateTime received = DateTime.Now.Subtract(TimeSpan.FromSeconds(2));
             pingInformation.Received = received;
 
-            Assert.True(received == pingInformation.Received);
-        }
+            double actual = pingInformation.AgeInMilliseconds;
 
-        [Theory]
-        [AutoNSubstituteData]
-        public void IsRunningReturnsTrueForRunningServiceTest([NotNull] PingInformation pingInformation)
-        {
-            DateTime received = DateTime.Now;
-
-            pingInformation.Received = received;
-
-            Assert.True(pingInformation.IsRunning);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void IsRunningReturnsTrueForNotRunningServiceTest([NotNull] PingInformation pingInformation)
-        {
-            DateTime received = DateTime.Now.Subtract(PingInformation.ExpiredAge);
-
-            pingInformation.Received = received;
-
-            Assert.False(pingInformation.IsRunning);
+            Assert.True(actual > 0.0);
         }
 
         [Theory]
@@ -81,14 +37,58 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void AgeInMillisecondsForRunningTest([NotNull] PingInformation pingInformation)
+        public void IsRunningReturnsTrueForNotRunningServiceTest([NotNull] PingInformation pingInformation)
         {
-            DateTime received = DateTime.Now.Subtract(TimeSpan.FromSeconds(2));
+            DateTime received = DateTime.Now.Subtract(PingInformation.ExpiredAge);
+
             pingInformation.Received = received;
 
-            double actual = pingInformation.AgeInMilliseconds;
+            Assert.False(pingInformation.IsRunning);
+        }
 
-            Assert.True(actual > 0.0);
+        [Theory]
+        [AutoNSubstituteData]
+        public void IsRunningReturnsTrueForRunningServiceTest([NotNull] PingInformation pingInformation)
+        {
+            DateTime received = DateTime.Now;
+
+            pingInformation.Received = received;
+
+            Assert.True(pingInformation.IsRunning);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void KnownTest([NotNull] PingInformation pingInformation)
+        {
+            Assert.False(pingInformation.IsUnknown);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void ReceivedRoundtripTest([NotNull] PingInformation pingInformation)
+        {
+            DateTime received = DateTime.Parse("2001-01-01 00:00:00");
+
+            pingInformation.Received = received;
+
+            Assert.True(received == pingInformation.Received);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void ServiceNameRoundtripTest([NotNull] PingInformation pingInformation)
+        {
+            pingInformation.ServiceName = "One";
+
+            Assert.Equal("One",
+                         pingInformation.ServiceName);
+        }
+
+        [Fact]
+        public void UnknownTest()
+        {
+            Assert.True(PingInformation.Unknown.IsUnknown);
         }
     }
 

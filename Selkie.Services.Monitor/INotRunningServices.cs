@@ -6,9 +6,9 @@ namespace Selkie.Services.Monitor
 {
     public interface INotRunningServices
     {
+        bool AreAllServicesRunning();
+
         [NotNull]
         IEnumerable <ServiceElement> CurrentlyNotRunning();
-
-        bool AreAllServicesRunning();
     }
 }

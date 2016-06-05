@@ -49,9 +49,6 @@ namespace Selkie.Services.Monitor.Configuration
     [ExcludeFromCodeCoverage]
     public class ServiceElement : ConfigurationElement
     {
-        public static readonly ServiceElement Unknown = new ServiceElement(true);
-        private readonly bool m_IsUnknown;
-
         public ServiceElement()
         {
         }
@@ -60,6 +57,8 @@ namespace Selkie.Services.Monitor.Configuration
         {
             m_IsUnknown = isUnknown;
         }
+
+        public static readonly ServiceElement Unknown = new ServiceElement(true);
 
         public bool IsUnknown
         {
@@ -124,5 +123,7 @@ namespace Selkie.Services.Monitor.Configuration
                 base [ "workingFolder" ] = value;
             }
         }
+
+        private readonly bool m_IsUnknown;
     }
 }

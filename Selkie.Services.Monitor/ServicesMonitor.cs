@@ -1,7 +1,7 @@
 ﻿using Castle.Core;
 using JetBrains.Annotations;
 using Selkie.Aop.Aspects;
-using Selkie.Common;
+using Selkie.Common.Interfaces;
 using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
 using Selkie.Windsor;
@@ -9,19 +9,12 @@ using Selkie.Windsor.Extensions;
 
 namespace Selkie.Services.Monitor
 {
-    [Interceptor(typeof ( MessageHandlerAspect ))]
+    [Interceptor(typeof( MessageHandlerAspect ))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class ServicesMonitor
         : IServicesMonitor,
           IStartable
     {
-        internal const int TwoSeconds = 2000;
-        internal const int FiveSeconds = 5000;
-        private readonly ISelkieBus m_Bus;
-        private readonly ISelkieLogger m_Logger;
-        private readonly INotRunningServices m_NotRunningServices;
-        private readonly IRunningServices m_RunningServices;
-        private readonly ITimer m_Timer;
         // ReSharper disable once TooManyDependencies
         public ServicesMonitor([NotNull] ISelkieBus bus,
                                [NotNull] ISelkieLogger logger,
@@ -35,6 +28,14 @@ namespace Selkie.Services.Monitor
             m_Timer = timer;
             m_RunningServices = runningServices;
         }
+
+        internal const int TwoSeconds = 2000;
+        internal const int FiveSeconds = 5000;
+        private readonly ISelkieBus m_Bus;
+        private readonly ISelkieLogger m_Logger;
+        private readonly INotRunningServices m_NotRunningServices;
+        private readonly IRunningServices m_RunningServices;
+        private readonly ITimer m_Timer;
 
         public bool IsServiceRunning(string serviceName)
         {

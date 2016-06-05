@@ -100,11 +100,13 @@ namespace Selkie.Services.Monitor
                 {
                     IPingInformation pingInformation = m_Services [ serviceName ];
 
-                    if ( !pingInformation.IsRunning )
+                    if ( pingInformation.IsRunning )
                     {
-                        areAllRunning = false;
-                        break;
+                        continue;
                     }
+
+                    areAllRunning = false;
+                    break;
                 }
                 return areAllRunning;
             }

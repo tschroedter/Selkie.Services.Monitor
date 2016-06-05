@@ -4,12 +4,6 @@ namespace Selkie.Services.Monitor
 {
     public class PingInformation : IPingInformation
     {
-        public static readonly IPingInformation Unknown = new PingInformation(true);
-        internal static readonly TimeSpan ExpiredAge = TimeSpan.FromSeconds(6);
-        private readonly bool m_IsUnknown;
-        private DateTime m_Received = DateTime.Now;
-        private string m_ServiceName = string.Empty;
-
         private PingInformation(bool isUnknown)
         {
             m_ServiceName = "Unknown";
@@ -21,6 +15,9 @@ namespace Selkie.Services.Monitor
             m_IsUnknown = false;
         }
 
+        public static readonly IPingInformation Unknown = new PingInformation(true);
+        internal static readonly TimeSpan ExpiredAge = TimeSpan.FromSeconds(6);
+
         internal TimeSpan AgeOfPing
         {
             get
@@ -30,6 +27,10 @@ namespace Selkie.Services.Monitor
                 return age;
             }
         }
+
+        private readonly bool m_IsUnknown;
+        private DateTime m_Received = DateTime.Now;
+        private string m_ServiceName = string.Empty;
 
         public bool IsUnknown
         {

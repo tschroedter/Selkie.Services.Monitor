@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
-using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Configuration;
 using Selkie.Windsor;
 using Selkie.XUnit.Extensions;
@@ -17,8 +16,9 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
     {
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsGetAllTest([NotNull] [Frozen] IServicesConfigurationRepository repository,
-                                         [NotNull] ServicesStarter servicesStarter)
+        public void StartCallsGetAllTest(
+            [NotNull] [Frozen] IServicesConfigurationRepository repository,
+            [NotNull] ServicesStarter servicesStarter)
         {
             // assemble
 
@@ -31,124 +31,9 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartStartsProcessesTest([NotNull] [Frozen] ISelkieLogger logger,
-                                             [NotNull] [Frozen] IServicesConfigurationRepository repository,
-                                             [NotNull] [Frozen] IServiceStarter serviceStarter,
-                                             [NotNull] ServicesStarter servicesStarter,
-                                             [NotNull] ServiceElement serviceOne,
-                                             [NotNull] ServiceElement serviceTwo)
-        {
-            // assemble
-            repository.GetAll().Returns(new[]
-                                        {
-                                            serviceOne,
-                                            serviceTwo
-                                        });
-
-            // act
-            servicesStarter.Start();
-
-            // assert
-            serviceStarter.Start(serviceOne);
-            serviceStarter.Start(serviceTwo);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StartLogStartTest([NotNull] [Frozen] ISelkieLogger logger,
-                                      [NotNull] [Frozen] IServicesConfigurationRepository repository,
-                                      [NotNull] ServiceElement serviceOne,
-                                      [NotNull] ISelkieProcess selkieProcess)
-        {
-            // assemble
-            repository.GetAll().Returns(new[]
-                                        {
-                                            serviceOne
-                                        });
-
-            selkieProcess.IsUnknown.Returns(false);
-
-            var serviceStarter = Substitute.For <IServiceStarter>();
-
-            ISelkieProcess process = serviceStarter.Start(Arg.Any <ServiceElement>());
-            process.Returns(selkieProcess);
-
-            var servicesStarter = new ServicesStarter(logger,
-                                                      repository,
-                                                      serviceStarter);
-
-            // act
-            servicesStarter.Start();
-
-            // assert
-            logger.Received().Info(Arg.Is <string>(x => x.StartsWith("...service")));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StartLogSuccesfullStartTest([NotNull] [Frozen] ISelkieLogger logger,
-                                                [NotNull] [Frozen] IServicesConfigurationRepository repository,
-                                                [NotNull] ServiceElement serviceOne,
-                                                [NotNull] ISelkieProcess selkieProcess)
-        {
-            // assemble
-            repository.GetAll().Returns(new[]
-                                        {
-                                            serviceOne
-                                        });
-
-            selkieProcess.IsUnknown.Returns(false);
-
-            var serviceStarter = Substitute.For <IServiceStarter>();
-
-            ISelkieProcess process = serviceStarter.Start(Arg.Any <ServiceElement>());
-            process.Returns(selkieProcess);
-
-            var servicesStarter = new ServicesStarter(logger,
-                                                      repository,
-                                                      serviceStarter);
-
-            // act
-            servicesStarter.Start();
-
-            // assert
-            logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Starting")));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StartLogUnsuccesfullStartTest([NotNull] [Frozen] ISelkieLogger logger,
-                                                  [NotNull] [Frozen] ISelkieManagementClient client,
-                                                  [NotNull] [Frozen] IServicesConfigurationRepository repository,
-                                                  [NotNull] ServiceElement serviceOne,
-                                                  [NotNull] ISelkieProcess selkieProcess)
-        {
-            // assemble
-            repository.GetAll().Returns(new[]
-                                        {
-                                            serviceOne
-                                        });
-
-            var serviceStarter = Substitute.For <IServiceStarter>();
-
-            ISelkieProcess process = serviceStarter.Start(Arg.Any <ServiceElement>());
-            process.Returns(SelkieProcess.Unknown);
-
-            var servicesStarter = new ServicesStarter(logger,
-                                                      repository,
-                                                      serviceStarter);
-
-            // act
-            servicesStarter.Start();
-
-            // assert
-            logger.Received().Error(Arg.Is <string>(x => x.StartsWith("...unable")));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
-                                         [NotNull] ServicesStarter servicesStarter)
+        public void StartCallsLoggerTest(
+            [NotNull] [Frozen] ISelkieLogger logger,
+            [NotNull] ServicesStarter servicesStarter)
         {
             // assemble
             // act
@@ -160,8 +45,70 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
-                                        [NotNull] ServicesStarter servicesStarter)
+        public void StartCallsStarterTest(
+            [NotNull] [Frozen] IServicesConfigurationRepository repository,
+            [NotNull] [Frozen] IServiceElementStarter starter,
+            [NotNull] ServiceElement serviceOne,
+            [NotNull] ServicesStarter sut)
+        {
+            // assemble
+            repository.GetAll().Returns(new[]
+                                        {
+                                            serviceOne
+                                        });
+
+            // act
+            sut.Start();
+
+            // assert
+            starter.Received().StartService(serviceOne);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void StartLogMessageTest(
+            [NotNull] [Frozen] ISelkieLogger logger,
+            [NotNull] ServicesStarter sut)
+        {
+            // assemble
+            // act
+            sut.Start();
+
+            // assert
+            logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Started")));
+        }
+
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void StartStartsProcessesTest(
+            [NotNull] [Frozen] ISelkieLogger logger,
+            [NotNull] [Frozen] IServicesConfigurationRepository repository,
+            [NotNull] [Frozen] IServiceElementStarter starter,
+            [NotNull] ServicesStarter sut,
+            [NotNull] ServiceElement serviceOne,
+            [NotNull] ServiceElement serviceTwo)
+        {
+            // assemble
+            repository.GetAll().Returns(new[]
+                                        {
+                                            serviceOne,
+                                            serviceTwo
+                                        });
+
+            // act
+            sut.Start();
+
+            // assert
+            starter.StartService(serviceOne);
+            starter.StartService(serviceTwo);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void StopCallsLoggerTest(
+            [NotNull] [Frozen] ISelkieLogger logger,
+            [NotNull] ServicesStarter servicesStarter)
         {
             // assemble
             // act

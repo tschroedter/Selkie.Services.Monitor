@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
+using Selkie.Common.Interfaces;
 using Selkie.Services.Monitor.Configuration;
 using Selkie.XUnit.Extensions;
 using Xunit;
@@ -30,21 +31,6 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void Create_ReturnsFullPathEndingWithSlash_ForFullPath([NotNull] PathToFullPathConverter sut)
-        {
-            // assemble
-            var expected = @"C:\Temp\";
-
-            // act
-            string actual = sut.ToFullPath(@"C:\Temp");
-
-            // assert
-            Assert.Equal(expected,
-                         actual);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
         public void Create_ReturnsFullPath_ForRelativePath([NotNull, Frozen] ISelkieEnvironment environment,
                                                            [NotNull] PathToFullPathConverter sut)
         {
@@ -54,6 +40,21 @@ namespace Selkie.Services.Monitor.Tests.Configuration.XUnit
 
             // act
             string actual = sut.ToFullPath(@".\Temp");
+
+            // assert
+            Assert.Equal(expected,
+                         actual);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void Create_ReturnsFullPathEndingWithSlash_ForFullPath([NotNull] PathToFullPathConverter sut)
+        {
+            // assemble
+            var expected = @"C:\Temp\";
+
+            // act
+            string actual = sut.ToFullPath(@"C:\Temp");
 
             // assert
             Assert.Equal(expected,

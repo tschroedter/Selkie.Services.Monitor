@@ -10,10 +10,6 @@ namespace Selkie.Services.Monitor.Configuration
     [ProjectComponent(Lifestyle.Transient)]
     public class SelkieProcess : ISelkieProcess
     {
-        public static readonly ISelkieProcess Unknown = new SelkieProcess(true);
-        private readonly bool m_IsUnknown;
-        private readonly ProcessStartInfo m_ProcessStartInfo;
-
         private SelkieProcess(bool isUnknown)
         {
             m_IsUnknown = isUnknown;
@@ -23,6 +19,10 @@ namespace Selkie.Services.Monitor.Configuration
         {
             m_ProcessStartInfo = processStartInfo;
         }
+
+        public static readonly ISelkieProcess Unknown = new SelkieProcess(true);
+        private readonly bool m_IsUnknown;
+        private readonly ProcessStartInfo m_ProcessStartInfo;
 
         public bool IsUnknown
         {

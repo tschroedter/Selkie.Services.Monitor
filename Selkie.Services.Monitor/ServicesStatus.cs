@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Castle.Core;
 using JetBrains.Annotations;
 using Selkie.Aop.Aspects;
-using Selkie.Common;
+using Selkie.Common.Interfaces;
 using Selkie.EasyNetQ;
 using Selkie.Services.Monitor.Common.Messages;
 using Selkie.Services.Monitor.Configuration;
@@ -12,33 +11,30 @@ using Selkie.Windsor.Extensions;
 
 namespace Selkie.Services.Monitor
 {
-    [Interceptor(typeof ( MessageHandlerAspect ))]
+    [Interceptor(typeof( MessageHandlerAspect ))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class ServicesStatus
         : IServicesStatus,
           IStartable
     {
-        internal const int FourSeconds = 4000;
-        internal const int TenSeconds = 10000;
-        private readonly ISelkieBus m_Bus;
-        private readonly ISelkieLogger m_Logger;
-        private readonly IServicesConfigurationRepository m_Repository;
-        private readonly IRunningServices m_RunningServices;
-        private readonly ITimer m_Timer;
-        private IEnumerable <ServiceElement> m_NotRunningServices = new ServiceElement[0];
-
         public ServicesStatus([NotNull] ISelkieLogger logger,
                               [NotNull] ISelkieBus bus,
-                              [NotNull] IServicesConfigurationRepository repository,
-                              [NotNull] IRunningServices runningServices,
+                              [NotNull] IDetermineNotRunningServices determineNotRunningServices,
                               [NotNull] ITimer timer)
         {
             m_Logger = logger;
             m_Bus = bus;
-            m_Repository = repository;
-            m_RunningServices = runningServices;
+            m_DetermineNotRunningServices = determineNotRunningServices;
             m_Timer = timer;
         }
+
+        internal const int FourSeconds = 4000;
+        internal const int TenSeconds = 10000;
+        private readonly ISelkieBus m_Bus;
+        private readonly IDetermineNotRunningServices m_DetermineNotRunningServices;
+        private readonly ISelkieLogger m_Logger;
+        private readonly ITimer m_Timer;
+        private IEnumerable <ServiceElement> m_NotRunningServices = new ServiceElement[0];
 
         public IEnumerable <ServiceElement> NotRunningServices
         {
@@ -64,7 +60,7 @@ namespace Selkie.Services.Monitor
 
         internal void Update([NotNull] object state)
         {
-            m_NotRunningServices = DetermineNotRunningServices();
+            m_NotRunningServices = m_DetermineNotRunningServices.GetNotRunningServices();
 
             RestartNotRunningServices(m_NotRunningServices);
         }
@@ -85,27 +81,6 @@ namespace Selkie.Services.Monitor
 
                 m_Bus.PublishAsync(message);
             }
-        }
-
-        [NotNull]
-        private IEnumerable <ServiceElement> DetermineNotRunningServices()
-        {
-            IEnumerable <ServiceElement> configured = m_Repository.GetAll();
-            string[] running = m_RunningServices.CurrentlyRunning().ToArray();
-
-            var notRunning = new List <ServiceElement>();
-
-            foreach ( ServiceElement serviceElement in configured )
-            {
-                bool isRunning = running.Any(serviceName => serviceElement.ServiceName.Contains(serviceName));
-
-                if ( !isRunning )
-                {
-                    notRunning.Add(serviceElement);
-                }
-            }
-
-            return notRunning;
         }
     }
 }

@@ -19,6 +19,11 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
             }
         }
 
+        private static bool IsSelkieProcess(Process x)
+        {
+            return x.ProcessName.StartsWith("Selkie.") && x.ProcessName.EndsWith(".Console");
+        }
+
         private static void KillProcess(Process process)
         {
             try
@@ -34,11 +39,6 @@ namespace Selkie.Services.Monitor.SpecFlow.Steps.Common
                                   process.ProcessName,
                                   exception.Message);
             }
-        }
-
-        private static bool IsSelkieProcess(Process x)
-        {
-            return x.ProcessName.StartsWith("Selkie.") && x.ProcessName.EndsWith(".Console");
         }
     }
 }

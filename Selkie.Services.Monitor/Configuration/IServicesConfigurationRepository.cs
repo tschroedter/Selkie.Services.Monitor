@@ -6,9 +6,9 @@ namespace Selkie.Services.Monitor.Configuration
     public interface IServicesConfigurationRepository
     {
         [NotNull]
-        ServiceElement GetByServiceName([NotNull] string name);
+        IEnumerable <ServiceElement> GetAll();
 
         [NotNull]
-        IEnumerable <ServiceElement> GetAll();
+        ServiceElement GetByServiceName([NotNull] string name);
     }
 }

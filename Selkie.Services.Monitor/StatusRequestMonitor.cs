@@ -9,17 +9,12 @@ using Selkie.Windsor.Extensions;
 
 namespace Selkie.Services.Monitor
 {
-    [Interceptor(typeof ( MessageHandlerAspect ))]
+    [Interceptor(typeof( MessageHandlerAspect ))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class StatusRequestMonitor
         : IStatusRequestMonitor,
           IStartable
     {
-        private readonly ISelkieBus m_Bus;
-        private readonly ISelkieLogger m_Logger;
-        private readonly INotRunningServices m_NotRunningServices;
-        private readonly IRunningServices m_RunningServices;
-
         public StatusRequestMonitor([NotNull] ISelkieBus bus,
                                     [NotNull] ISelkieLogger logger,
                                     [NotNull] IRunningServices runningServices,
@@ -33,6 +28,11 @@ namespace Selkie.Services.Monitor
             m_Bus.SubscribeAsync <StatusRequestMessage>(GetType().FullName,
                                                         StatusRequestHandler);
         }
+
+        private readonly ISelkieBus m_Bus;
+        private readonly ISelkieLogger m_Logger;
+        private readonly INotRunningServices m_NotRunningServices;
+        private readonly IRunningServices m_RunningServices;
 
         public void Start()
         {

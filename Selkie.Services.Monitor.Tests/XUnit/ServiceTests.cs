@@ -26,46 +26,6 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
-                                        [NotNull] Service service)
-        {
-            service.Stop();
-
-            logger.Received().Debug(Arg.Any <string>());
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StopSendsServiceStoppedResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
-                                                               [NotNull] Service service)
-        {
-            service.Stop();
-
-            bus.Received().Publish(Arg.Is <ServiceStoppedResponseMessage>(x => x.ServiceName == Service.ServiceName));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StopCallsStopAllServicesTest([NotNull] [Frozen] IServicesStopper stopper,
-                                                 [NotNull] Service service)
-        {
-            service.Stop();
-
-            stopper.Received().StopAllServices();
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void StartSendsMessageTest([NotNull] [Frozen] ISelkieBus bus,
-                                          [NotNull] Service service)
-        {
-            service.Start();
-
-            bus.Received().Publish(Arg.Is <ServiceStartedResponseMessage>(x => x.ServiceName == Service.ServiceName));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
         public void InitializeCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                               [NotNull] Service service)
         {
@@ -82,6 +42,46 @@ namespace Selkie.Services.Monitor.Tests.XUnit
             service.Start();
 
             logger.Received().Debug(Arg.Any <string>());
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void StartSendsMessageTest([NotNull] [Frozen] ISelkieBus bus,
+                                          [NotNull] Service service)
+        {
+            service.Start();
+
+            bus.Received().Publish(Arg.Is <ServiceStartedResponseMessage>(x => x.ServiceName == Service.ServiceName));
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
+                                        [NotNull] Service service)
+        {
+            service.Stop();
+
+            logger.Received().Debug(Arg.Any <string>());
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void StopCallsStopAllServicesTest([NotNull] [Frozen] IServicesStopper stopper,
+                                                 [NotNull] Service service)
+        {
+            service.Stop();
+
+            stopper.Received().StopAllServices();
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void StopSendsServiceStoppedResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
+                                                               [NotNull] Service service)
+        {
+            service.Stop();
+
+            bus.Received().Publish(Arg.Is <ServiceStoppedResponseMessage>(x => x.ServiceName == Service.ServiceName));
         }
     }
 }

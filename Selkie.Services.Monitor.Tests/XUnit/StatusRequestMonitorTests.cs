@@ -18,16 +18,15 @@ namespace Selkie.Services.Monitor.Tests.XUnit
     {
         [Theory]
         [AutoNSubstituteData]
-        public void SubscribesToStatusRequestMessageTest([NotNull] [Frozen] ISelkieBus bus,
-                                                         [NotNull] StatusRequestMonitor requestMonitor)
+        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
+                                         [NotNull] StatusRequestMonitor monitor)
         {
             // assemble
-            string subscriptionId = requestMonitor.GetType().ToString();
-
             // act
+            monitor.Start();
+
             // assert
-            bus.Received().SubscribeAsync(subscriptionId,
-                                          Arg.Any <Action <StatusRequestMessage>>());
+            logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Started")));
         }
 
         [Theory]
@@ -62,19 +61,6 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void StartCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
-                                         [NotNull] StatusRequestMonitor monitor)
-        {
-            // assemble
-            // act
-            monitor.Start();
-
-            // assert
-            logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Started")));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
         public void StopCallsLoggerTest([NotNull] [Frozen] ISelkieLogger logger,
                                         [NotNull] StatusRequestMonitor monitor)
         {
@@ -84,6 +70,20 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
             // assert
             logger.Received().Info(Arg.Is <string>(x => x.StartsWith("Stopped")));
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void SubscribesToStatusRequestMessageTest([NotNull] [Frozen] ISelkieBus bus,
+                                                         [NotNull] StatusRequestMonitor requestMonitor)
+        {
+            // assemble
+            string subscriptionId = requestMonitor.GetType().ToString();
+
+            // act
+            // assert
+            bus.Received().SubscribeAsync(subscriptionId,
+                                          Arg.Any <Action <StatusRequestMessage>>());
         }
     }
 }

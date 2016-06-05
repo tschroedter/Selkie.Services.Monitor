@@ -24,7 +24,7 @@ namespace Selkie.Services.Monitor
             container.Register(
                                Classes.FromThisAssembly()
                                       .BasedOn <IService>()
-                                      .WithServiceFromInterface(typeof ( IService ))
+                                      .WithServiceFromInterface(typeof( IService ))
                                       .Configure(c => c.LifeStyle.Is(LifestyleType.Transient)),
                                Component.For <ISelkieProcessFactory>().AsFactory());
             // ReSharper restore MaximumChainedReferences

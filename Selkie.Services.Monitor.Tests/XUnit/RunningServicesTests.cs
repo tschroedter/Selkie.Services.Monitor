@@ -16,29 +16,21 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void IsServiceRunningReturnsTrueForRunningServiceTest([NotNull] RunningServices runningServices)
+        public void AddOrUpdateStatusAddsNewServiceTest([NotNull] RunningServices runningServices)
         {
             // assemble
             runningServices.AddOrUpdateStatus("One");
 
             // act
+            bool actual = runningServices.IsServiceRunning("One");
+
             // assert
-            Assert.True(runningServices.IsServiceRunning("One"));
+            Assert.True(actual);
         }
 
         [Theory]
         [AutoNSubstituteData]
-        public void IsServiceRunningReturnsFalseForUnknownServiceTest([NotNull] RunningServices runningServices)
-        {
-            // assemble
-            // act
-            // assert
-            Assert.False(runningServices.IsServiceRunning("Unknown"));
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void IsServiceRunningReturnsFalseForNotRunningServiceTest([NotNull] RunningServices runningServices)
+        public void AddOrUpdateStatusUpdatesExistingServiceTest([NotNull] RunningServices runningServices)
         {
             // assemble
             runningServices.AddOrUpdateStatus("One");
@@ -47,8 +39,81 @@ namespace Selkie.Services.Monitor.Tests.XUnit
                                   "One");
 
             // act
+            runningServices.AddOrUpdateStatus("One");
+
+            DateTime actual = runningServices.GetServiceInformation("One").Received;
+
             // assert
-            Assert.False(runningServices.IsServiceRunning("One"));
+            Assert.True(NotRunningDateTime < actual);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void AreGivenServicesAllRunningReturnsFalseForNotAllRunningTest([NotNull] RunningServices runningServices)
+        {
+            // assemble
+            runningServices.AddOrUpdateStatus("One");
+            runningServices.AddOrUpdateStatus("Two");
+
+            MakeServiceNotRunning(runningServices,
+                                  "Two");
+
+            string[] given =
+            {
+                "One",
+                "Two"
+            };
+
+            // act
+            bool actual = runningServices.AreGivenServicesAllRunning(given);
+
+            // assert
+            Assert.False(actual);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void AreGivenServicesAllRunningReturnsTrueForAllRunningTest([NotNull] RunningServices runningServices)
+        {
+            // assemble
+            runningServices.AddOrUpdateStatus("One");
+            runningServices.AddOrUpdateStatus("Two");
+
+            string[] given =
+            {
+                "One",
+                "Two"
+            };
+
+            // act
+            bool actual = runningServices.AreGivenServicesAllRunning(given);
+
+            // assert
+            Assert.True(actual);
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void CurrentlyRunningReturnsRunningServicesTest([NotNull] RunningServices runningServices)
+        {
+            // assemble
+            runningServices.AddOrUpdateStatus("One");
+            runningServices.AddOrUpdateStatus("Two");
+            runningServices.AddOrUpdateStatus("Not Running");
+
+            MakeServiceNotRunning(runningServices,
+                                  "Not Running");
+
+            // act
+            string[] actual = runningServices.CurrentlyRunning().ToArray();
+
+            // assert
+            Assert.Equal(2,
+                         actual.Length);
+            Assert.Equal("One",
+                         actual [ 0 ]);
+            Assert.Equal("Two",
+                         actual [ 1 ]);
         }
 
         [Theory]
@@ -80,30 +145,6 @@ namespace Selkie.Services.Monitor.Tests.XUnit
             Assert.Equal("Unknown",
                          actual.ServiceName);
             Assert.True(actual.IsUnknown);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void CurrentlyRunningReturnsRunningServicesTest([NotNull] RunningServices runningServices)
-        {
-            // assemble
-            runningServices.AddOrUpdateStatus("One");
-            runningServices.AddOrUpdateStatus("Two");
-            runningServices.AddOrUpdateStatus("Not Running");
-
-            MakeServiceNotRunning(runningServices,
-                                  "Not Running");
-
-            // act
-            string[] actual = runningServices.CurrentlyRunning().ToArray();
-
-            // assert
-            Assert.Equal(2,
-                         actual.Length);
-            Assert.Equal("One",
-                         actual [ 0 ]);
-            Assert.Equal("Two",
-                         actual [ 1 ]);
         }
 
         [Theory]
@@ -151,66 +192,7 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void AreGivenServicesAllRunningReturnsTrueForAllRunningTest([NotNull] RunningServices runningServices)
-        {
-            // assemble
-            runningServices.AddOrUpdateStatus("One");
-            runningServices.AddOrUpdateStatus("Two");
-
-            string[] given =
-            {
-                "One",
-                "Two"
-            };
-
-            // act
-            bool actual = runningServices.AreGivenServicesAllRunning(given);
-
-            // assert
-            Assert.True(actual);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void AreGivenServicesAllRunningReturnsFalseForNotAllRunningTest([NotNull] RunningServices runningServices)
-        {
-            // assemble
-            runningServices.AddOrUpdateStatus("One");
-            runningServices.AddOrUpdateStatus("Two");
-
-            MakeServiceNotRunning(runningServices,
-                                  "Two");
-
-            string[] given =
-            {
-                "One",
-                "Two"
-            };
-
-            // act
-            bool actual = runningServices.AreGivenServicesAllRunning(given);
-
-            // assert
-            Assert.False(actual);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void AddOrUpdateStatusAddsNewServiceTest([NotNull] RunningServices runningServices)
-        {
-            // assemble
-            runningServices.AddOrUpdateStatus("One");
-
-            // act
-            bool actual = runningServices.IsServiceRunning("One");
-
-            // assert
-            Assert.True(actual);
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void AddOrUpdateStatusUpdatesExistingServiceTest([NotNull] RunningServices runningServices)
+        public void IsServiceRunningReturnsFalseForNotRunningServiceTest([NotNull] RunningServices runningServices)
         {
             // assemble
             runningServices.AddOrUpdateStatus("One");
@@ -219,12 +201,30 @@ namespace Selkie.Services.Monitor.Tests.XUnit
                                   "One");
 
             // act
+            // assert
+            Assert.False(runningServices.IsServiceRunning("One"));
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void IsServiceRunningReturnsFalseForUnknownServiceTest([NotNull] RunningServices runningServices)
+        {
+            // assemble
+            // act
+            // assert
+            Assert.False(runningServices.IsServiceRunning("Unknown"));
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void IsServiceRunningReturnsTrueForRunningServiceTest([NotNull] RunningServices runningServices)
+        {
+            // assemble
             runningServices.AddOrUpdateStatus("One");
 
-            DateTime actual = runningServices.GetServiceInformation("One").Received;
-
+            // act
             // assert
-            Assert.True(NotRunningDateTime < actual);
+            Assert.True(runningServices.IsServiceRunning("One"));
         }
 
         private static void MakeServiceNotRunning([NotNull] RunningServices runningServices,

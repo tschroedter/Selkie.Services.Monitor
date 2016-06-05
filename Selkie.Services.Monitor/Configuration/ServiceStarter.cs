@@ -6,12 +6,12 @@ namespace Selkie.Services.Monitor.Configuration
     [ProjectComponent(Lifestyle.Transient)]
     public class ServiceStarter : IServiceStarter
     {
-        private readonly IServiceProcessCreator m_Creator;
-
         public ServiceStarter([NotNull] IServiceProcessCreator creator)
         {
             m_Creator = creator;
         }
+
+        private readonly IServiceProcessCreator m_Creator;
 
         public ISelkieProcess Start(ServiceElement serviceElement)
         {

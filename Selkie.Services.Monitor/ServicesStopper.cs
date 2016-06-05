@@ -10,14 +10,10 @@ using Selkie.Windsor.Extensions;
 
 namespace Selkie.Services.Monitor
 {
-    [Interceptor(typeof ( MessageHandlerAspect ))]
+    [Interceptor(typeof( MessageHandlerAspect ))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class ServicesStopper : IServicesStopper
     {
-        private readonly ISelkieBus m_Bus;
-        private readonly ISelkieLogger m_Logger;
-        private readonly IServicesConfigurationRepository m_Repository;
-
         public ServicesStopper([NotNull] ISelkieLogger logger,
                                [NotNull] ISelkieBus bus,
                                [NotNull] IServicesConfigurationRepository repository)
@@ -26,6 +22,10 @@ namespace Selkie.Services.Monitor
             m_Bus = bus;
             m_Repository = repository;
         }
+
+        private readonly ISelkieBus m_Bus;
+        private readonly ISelkieLogger m_Logger;
+        private readonly IServicesConfigurationRepository m_Repository;
 
         public void StopAllServices()
         {

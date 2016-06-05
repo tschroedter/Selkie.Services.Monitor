@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using NSubstitute;
 using Ploeh.AutoFixture.Xunit;
-using Selkie.Common;
+using Selkie.Common.Interfaces;
 using Selkie.EasyNetQ;
 using Selkie.Services.Common.Messages;
 using Selkie.Windsor;
@@ -27,42 +27,14 @@ namespace Selkie.Services.Monitor.Tests.XUnit
             runningServices.Received().GetStatus();
         }
 
-        [Fact]
-        public void StartCallsInitializeOnTimerStartServices()
-        {
-            var timer = Substitute.For <ITimer>();
-
-            var monitor = new ServicesMonitor(Substitute.For <ISelkieBus>(),
-                                              Substitute.For <ISelkieLogger>(),
-                                              Substitute.For <IRunningServices>(),
-                                              Substitute.For <INotRunningServices>(),
-                                              timer);
-
-            monitor.Start();
-
-            timer.Received().Initialize(monitor.OnTimer,
-                                        ServicesMonitor.FiveSeconds,
-                                        ServicesMonitor.TwoSeconds);
-        }
-
         [Theory]
         [AutoNSubstituteData]
-        public void PingCallsWriteLineTest([NotNull] [Frozen] ISelkieLogger logger,
-                                           [NotNull] ServicesMonitor monitor)
+        public void IsServiceRunningCallsPingResponseMonitorTest([NotNull] [Frozen] IRunningServices runningServices,
+                                                                 [NotNull] ServicesMonitor monitor)
         {
-            monitor.Ping();
+            monitor.IsServiceRunning("TestService");
 
-            logger.Received().Debug(Arg.Any <string>());
-        }
-
-        [Theory]
-        [AutoNSubstituteData]
-        public void PingSendMessageToLineServiceTest([NotNull] [Frozen] ISelkieBus bus,
-                                                     [NotNull] ServicesMonitor monitor)
-        {
-            monitor.Ping();
-
-            bus.Received().PublishAsync(Arg.Any <PingRequestMessage>());
+            runningServices.Received().IsServiceRunning(Arg.Is <string>(x => x == "TestService"));
         }
 
         [Theory]
@@ -90,15 +62,28 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void OnTimerServicesCallsPingTest([NotNull] [Frozen] ISelkieBus bus,
-                                                 [NotNull] [Frozen] INotRunningServices notRunningServices,
-                                                 [NotNull] ServicesMonitor monitor)
+        public void OnTimerSendsPingRequestMessageTest([NotNull] [Frozen] ISelkieBus bus,
+                                                       [NotNull] ServicesMonitor monitor)
         {
-            notRunningServices.AreAllServicesRunning().Returns(false);
-
+            // assemble
+            // act
             monitor.OnTimer(this);
 
+            // assert
             bus.Received().PublishAsync(Arg.Any <PingRequestMessage>());
+        }
+
+        [Theory]
+        [AutoNSubstituteData]
+        public void OnTimerSendsServicesStatusResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
+                                                                  [NotNull] ServicesMonitor monitor)
+        {
+            // assemble
+            // act
+            monitor.OnTimer(this);
+
+            // assert
+            bus.Received().PublishAsync(Arg.Any <ServicesStatusResponseMessage>());
         }
 
         [Theory]
@@ -120,15 +105,15 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void OnTimerSendsServicesStatusResponseMessageTest([NotNull] [Frozen] ISelkieBus bus,
-                                                                  [NotNull] ServicesMonitor monitor)
+        public void OnTimerServicesCallsPingTest([NotNull] [Frozen] ISelkieBus bus,
+                                                 [NotNull] [Frozen] INotRunningServices notRunningServices,
+                                                 [NotNull] ServicesMonitor monitor)
         {
-            // assemble
-            // act
+            notRunningServices.AreAllServicesRunning().Returns(false);
+
             monitor.OnTimer(this);
 
-            // assert
-            bus.Received().PublishAsync(Arg.Any <ServicesStatusResponseMessage>());
+            bus.Received().PublishAsync(Arg.Any <PingRequestMessage>());
         }
 
         [Theory]
@@ -146,25 +131,22 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
         [Theory]
         [AutoNSubstituteData]
-        public void OnTimerSendsPingRequestMessageTest([NotNull] [Frozen] ISelkieBus bus,
-                                                       [NotNull] ServicesMonitor monitor)
+        public void PingCallsWriteLineTest([NotNull] [Frozen] ISelkieLogger logger,
+                                           [NotNull] ServicesMonitor monitor)
         {
-            // assemble
-            // act
-            monitor.OnTimer(this);
+            monitor.Ping();
 
-            // assert
-            bus.Received().PublishAsync(Arg.Any <PingRequestMessage>());
+            logger.Received().Debug(Arg.Any <string>());
         }
 
         [Theory]
         [AutoNSubstituteData]
-        public void IsServiceRunningCallsPingResponseMonitorTest([NotNull] [Frozen] IRunningServices runningServices,
-                                                                 [NotNull] ServicesMonitor monitor)
+        public void PingSendMessageToLineServiceTest([NotNull] [Frozen] ISelkieBus bus,
+                                                     [NotNull] ServicesMonitor monitor)
         {
-            monitor.IsServiceRunning("TestService");
+            monitor.Ping();
 
-            runningServices.Received().IsServiceRunning(Arg.Is <string>(x => x == "TestService"));
+            bus.Received().PublishAsync(Arg.Any <PingRequestMessage>());
         }
 
         [Theory]
@@ -181,6 +163,24 @@ namespace Selkie.Services.Monitor.Tests.XUnit
 
             // assert
             bus.Received().PublishAsync(Arg.Is <ServicesStatusResponseMessage>(x => x.IsAllServicesRunning));
+        }
+
+        [Fact]
+        public void StartCallsInitializeOnTimerStartServices()
+        {
+            var timer = Substitute.For <ITimer>();
+
+            var monitor = new ServicesMonitor(Substitute.For <ISelkieBus>(),
+                                              Substitute.For <ISelkieLogger>(),
+                                              Substitute.For <IRunningServices>(),
+                                              Substitute.For <INotRunningServices>(),
+                                              timer);
+
+            monitor.Start();
+
+            timer.Received().Initialize(monitor.OnTimer,
+                                        ServicesMonitor.FiveSeconds,
+                                        ServicesMonitor.TwoSeconds);
         }
 
         [Theory]

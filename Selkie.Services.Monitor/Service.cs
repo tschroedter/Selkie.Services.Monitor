@@ -9,15 +9,12 @@ using Selkie.Windsor;
 
 namespace Selkie.Services.Monitor
 {
-    [Interceptor(typeof ( MessageHandlerAspect ))]
+    [Interceptor(typeof( MessageHandlerAspect ))]
     [ProjectComponent(Lifestyle.Singleton)]
     public class Service
         : BaseService,
           IService
     {
-        public const string ServiceName = "Monitor Service";
-        private readonly IServicesStopper m_Stopper;
-
         public Service([NotNull] ISelkieBus bus,
                        [NotNull] ISelkieLogger logger,
                        [NotNull] ISelkieManagementClient client,
@@ -28,6 +25,17 @@ namespace Selkie.Services.Monitor
                    ServiceName)
         {
             m_Stopper = stopper;
+        }
+
+        public const string ServiceName = "Monitor Service";
+        private readonly IServicesStopper m_Stopper;
+
+        protected override void ServiceInitialize()
+        {
+            Logger.Debug("Service Initialized...");
+
+            ManagementClient.CheckOrConfigureRabbitMq();
+            // Todo: Not perfect to call CheckOrConfigureRabbitMq here because the services are already started!
         }
 
         protected override void ServiceStart()
@@ -57,14 +65,6 @@ namespace Selkie.Services.Monitor
                         });
 
             Logger.Debug("...Service stopped!");
-        }
-
-        protected override void ServiceInitialize()
-        {
-            Logger.Debug("Service Initialized...");
-
-            ManagementClient.CheckOrConfigureRabbitMq();
-            // Todo: Not perfect to call CheckOrConfigureRabbitMq here because the services are already started!
         }
     }
 }
