@@ -12,7 +12,7 @@ namespace Selkie.Services.Aco.Console
         public static void Main()
         {
             StartServiceAndRunForever(FromAssembly.This(),
-                                      AcoService.ServiceName);
+                                      Service.ServiceName);
 
             Environment.Exit(0);
         }

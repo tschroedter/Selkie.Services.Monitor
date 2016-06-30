@@ -50,8 +50,8 @@
       <HintPath>..\packages\AutoFixture.Xunit.3.45.1\lib\net40\Ploeh.AutoFixture.Xunit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Selkie.XUnit.Extensions, Version=0.6.127.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selkie.XUnit.Extensions.0.6.127\lib\net45\Selkie.XUnit.Extensions.dll</HintPath>
+    <Reference Include="Selkie.XUnit.Extensions, Version=0.6.129.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selkie.XUnit.Extensions.0.6.129\lib\net45\Selkie.XUnit.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
